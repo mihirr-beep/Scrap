@@ -136,7 +136,7 @@ function intro() {
     .from("#hero .giant .w", { yPercent: 118, duration: 1.25, stagger: .09 })
     .to("#hero .over", { opacity: 1, y: 0, duration: .9 }, .2)
     .to("#hero .lede", { opacity: 1, y: 0, duration: .9 }, .45)
-    .from("#hang", { y: -220, opacity: 0, duration: 1.5, ease: "expo.out" }, .35)
+    .from("#hang", { yPercent: -140, opacity: 0, duration: 1.5, ease: "expo.out" }, .35)
     .from(".hint", { opacity: 0, duration: .8 }, 1.1);
 
   if (!REDUCED) {
@@ -146,11 +146,6 @@ function intro() {
       { rotation: 3.5, duration: 2.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 1.6 });
   }
 
-  // drifts up and away as you leave the hero
-  gsap.to("#hang", {
-    y: 90, ease: "none",
-    scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true }
-  });
 
   gsap.to(".hint i", {
     scaleX: .3, duration: 1.1, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2.2
