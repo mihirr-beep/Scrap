@@ -507,7 +507,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* --- the chhipkali: a real one, fixed above everything, tappable --- */
 .lizard{
   position:fixed;left:0;top:0;z-index:95;
-  width:clamp(42px,11vw,60px);   /* pale and real, like the household horror */
+  width:clamp(54px,14vw,80px);   /* pale and real, like the household horror */
   cursor:pointer;will-change:transform;
   filter:drop-shadow(0 6px 9px rgba(58,17,48,.35));
 }
