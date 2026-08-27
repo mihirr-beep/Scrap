@@ -7,10 +7,10 @@
    ▼▼▼  EDIT THIS BLOCK — this is the only place you need to touch  ▼▼▼
    ===================================================================== */
 const CONFIG = {
-  name:     "Didi",          // her name (or "Didi")
-  from:     "Me",            // your name
+  name:     "Didi",               // her name (or "Didi")
+  from:     "Jay Swaminarayan",   // the sign-off under the letter
   occasion: "to the one who has had my back since before either of us had a choice",
-  date:     "",              // "" = today's date, or write your own
+  date:     "",                   // "" = today's date, or write your own
 
   // The teasing bubbles while the envelope dodges. The last one always opens it.
   dodges: [
@@ -358,7 +358,7 @@ function envelope() {
 
   function revealLetter() {
     const letterSec = $("#letterSec");
-    $("#outro").hidden = false;
+    $("#giftSec").hidden = false;      // the letter says there is a box at the last
     letterSec.hidden = false;
 
     gsap.fromTo("#paper",
@@ -405,6 +405,112 @@ function envelope() {
 }
 
 /* ---------------------------------------------------------------------
+   THE GIFT — a rattling box, and what lives inside it
+   ------------------------------------------------------------------- */
+function gift() {
+  const box   = $("#gift");
+  const lid   = $("#giftLid");
+  const stage = $(".giftstage");
+  const hint  = $("#giftHint");
+  const liz   = $("#lizard");
+  let opened  = false;
+
+  // the box rattles every few seconds — something is alive in there
+  const rattle = REDUCED ? null : gsap.timeline({ repeat: -1, repeatDelay: 2.4, delay: 1 })
+    .to(box, { rotation: 4, duration: .06, repeat: 5, yoyo: true, ease: "none" })
+    .to(box, { rotation: 0, duration: .1 });
+
+  /* a small puff of pink and gold when the lid goes */
+  function confetti() {
+    const r = box.getBoundingClientRect();
+    const sr = stage.getBoundingClientRect();
+    const colors = ["#c2255c", "#efb93f", "#e0447f", "#d99a2b"];
+    for (let i = 0; i < 14; i++) {
+      const s = document.createElement("i");
+      s.style.cssText = "position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;"
+        + "background:" + colors[i % 4] + ";left:" + (r.left - sr.left + r.width / 2) + "px;top:" + (r.top - sr.top + r.height * .2) + "px";
+      stage.appendChild(s);
+      const a = gsap.utils.random(-Math.PI, 0), d = gsap.utils.random(50, 130);
+      gsap.to(s, {
+        x: Math.cos(a) * d, y: Math.sin(a) * d + 60, opacity: 0, scale: .4,
+        duration: gsap.utils.random(.7, 1.2), ease: "power2.out", onComplete: () => s.remove()
+      });
+    }
+  }
+
+  /* --- she comes out, then the screen is hers --- */
+  function releaseLizard() {
+    const r = box.getBoundingClientRect();
+    liz.hidden = false;
+    const w = liz.offsetWidth || 64;
+    const startX = r.left + r.width / 2 - w / 2;
+    const startY = r.top + r.height * .1;
+    gsap.set(liz, { x: startX, y: startY, scale: .25, opacity: 0, rotation: -20 });
+
+    if (REDUCED) { gsap.set(liz, { scale: 1, opacity: 1, rotation: 0 }); return; }
+
+    gsap.timeline({ onComplete: wander })
+      .to(liz, { opacity: 1, scale: 1, duration: .5, ease: "back.out(2)" })
+      .to(liz, { x: startX - 90, y: startY - 40, rotation: -80, duration: .55, ease: "power1.out" });
+  }
+
+  /* dart, freeze, dart again — the most lizard behaviour there is */
+  function wander() {
+    const w = liz.offsetWidth || 64, h = liz.offsetHeight || 100, pad = 14;
+    const x = gsap.utils.random(pad, window.innerWidth  - w - pad);
+    const y = gsap.utils.random(pad + 50, window.innerHeight - h - pad);
+    const cx = gsap.getProperty(liz, "x"), cy = gsap.getProperty(liz, "y");
+    const dx = x - cx, dy = y - cy;
+    const dist = Math.hypot(dx, dy);
+    const heading = Math.atan2(dy, dx) * 180 / Math.PI + 90;   // svg faces up
+
+    gsap.timeline({ onComplete: () => gsap.delayedCall(gsap.utils.random(.5, 2.4), wander) })
+      .to(liz, { rotation: heading + "_short", duration: .16, ease: "power2.out" })
+      .to(liz, { x, y, duration: Math.max(.35, dist / 460), ease: "power1.inOut" }, "<")
+      .to("#lizBody", {                                        // scuttle while moving
+        rotation: 4, transformOrigin: "50% 42%", duration: .07,
+        repeat: Math.min(16, Math.max(4, Math.floor(dist / 26))), yoyo: true, ease: "none"
+      }, "<")
+      .set("#lizBody", { rotation: 0 });
+  }
+
+  // tapping her makes her bolt — she is not a fan of you either
+  liz.addEventListener("pointerdown", () => {
+    if (REDUCED) return;
+    gsap.killTweensOf(liz);
+    gsap.killTweensOf("#lizBody");
+    wander();
+  });
+
+  function open() {
+    if (opened) return;
+    opened = true;
+    if (rattle) rattle.kill();
+    box.setAttribute("aria-expanded", "true");
+    hint.textContent = "wait. is that…";
+    confetti();
+
+    gsap.timeline({
+      defaults: { ease: "expo.out" },
+      onComplete() {
+        hint.textContent = "A chhipkali. She lives on this site now — tap her.";
+        $("#outro").hidden = false;
+        ScrollTrigger.refresh();
+      }
+    })
+      .to(box,  { rotation: 0, scale: 1.06, duration: .3 })
+      .to(lid,  { y: -110, rotation: -24, opacity: 0, duration: .9 }, "-=0.05")
+      .to(box,  { scale: 1, duration: .5 }, "-=0.5")
+      .add(releaseLizard, "-=0.55");
+  }
+
+  box.addEventListener("click", open);
+  box.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+  });
+}
+
+/* ---------------------------------------------------------------------
    progress + replay
    ------------------------------------------------------------------- */
 function chrome() {
@@ -426,6 +532,7 @@ keys(horizontalGap() || (() => {}));
 chips();
 celebrate();
 envelope();
+gift();
 chrome();
 runLoader();
 

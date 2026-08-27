@@ -10,8 +10,8 @@ Two places only:
 1. **`js/main.js`** — the `CONFIG` block at the very top: her name, your name,
    your line for her, the two city labels, the distance, and the teasing bubble
    messages the envelope shows while it dodges.
-2. **`index.html`** — the block marked `EDIT ME — WRITE THIS YOURSELF` inside
-   `.paper__body`. That is the letter. Write it yourself; that is the whole point.
+2. **`index.html`** — the letter inside `.paper__body`. It is already the
+   sender's own words; edit it there if anything changes.
 
 ## The look
 
@@ -44,3 +44,9 @@ The envelope is assembled in CSS from those materials rather than being one flat
 photo, so its flap can actually hinge open in 3D. A flat photo cannot animate.
 
 Photo sources: Pexels (free to use, no attribution required).
+
+## The finale
+
+The letter promises a box at the last. The box rattles. Opening it releases a
+chhipkali (hand-drawn SVG) that darts and freezes her way around the whole
+screen forever — tap her and she bolts. Sibling gift-giving at its finest.

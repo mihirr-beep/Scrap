@@ -24,7 +24,7 @@ window.__failsafe = setTimeout(function () {
   // Only give the letter away if GSAP is truly gone.
   if (!window.gsap) {
     document.documentElement.classList.add("no-motion");
-    ["letterSec", "outro"].forEach(function (id) {
+    ["letterSec", "giftSec", "outro"].forEach(function (id) {
       var e = document.getElementById(id); if (e) e.hidden = false;
     });
   }
@@ -210,23 +210,45 @@ window.__failsafe = setTimeout(function () {
       <div class="paper__inner">
         <p class="paper__date" data-fill="date">&mdash;</p>
 
-        <!-- ===== EDIT ME — WRITE THIS YOURSELF. Keep it messy and real. ===== -->
+        <!-- the letter — written by the sender, not by a template -->
         <div class="paper__body" id="paperBody">
-          <p>Dear <span data-fill="name">Didi</span>,</p>
-          <p>[ This is your part. Don&rsquo;t let me write it &mdash; write it badly, in your own words, at 1am. That&rsquo;s the whole point of it being handwritten. ]</p>
-          <p>[ Say the thing you&rsquo;d say if you finally picked up the phone. ]</p>
+          <p>Yo,</p>
+          <p>It&rsquo;s been a very long time since we last interacted with each other. I know &mdash; we were too busy with our work.</p>
+          <p>I had trapped myself with so much work that I even forgot to wish you on your birthday. Never mind.</p>
+          <p>I will just write something in short:</p>
+          <p class="paper__big">Happy Raksha Bandhan.</p>
+          <p>&mdash; In past, you were just working and working all day [without attending college most of the time].</p>
+          <p>&mdash; So I hope you are having a good time there (now).</p>
+          <p>&mdash; Khali time pas karu 6u, atlu dhyanthi na vanchis&hellip; kasu emotional nathi lakhto.</p>
+          <p>I wanted to give you a gift, but I don&rsquo;t actually know where you live either. So I&rsquo;m sending one via this site &mdash; at the last, there is one box. That&rsquo;s your gift.</p>
         </div>
-        <!-- ===== END EDIT ===== -->
 
         <p class="paper__sign">
-          <span class="paper__signfrom">your brother, always</span>
-          <span class="paper__signname" data-fill="from">Me</span>
+          <span class="paper__signfrom">take care &middot; be safe</span>
+          <span class="paper__signname" data-fill="from">Jay Swaminarayan</span>
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ============ 8. OUTRO ============ -->
+  <!-- ============ 8. THE GIFT ============ -->
+  <section class="sec sec--gift" id="giftSec" hidden>
+    <div class="wrap wrap--tight">
+      <h2 class="big reveal-up">And the box<br><span class="pink">I promised.</span></h2>
+      <p class="body" id="giftHint">It&rsquo;s&hellip; moving? Tap it.</p>
+    </div>
+
+    <div class="giftstage">
+      <button class="gift" id="gift" aria-label="Open your gift">
+        <span class="gift__shadow"></span>
+        <span class="gift__box"><i class="gift__ribbon"></i></span>
+        <span class="gift__lid" id="giftLid"><i class="gift__knot"></i></span>
+      </button>
+      <p class="gift__tag">for: <span data-fill="name">Didi</span></p>
+    </div>
+  </section>
+
+  <!-- ============ 9. OUTRO ============ -->
   <footer class="sec sec--outro" id="outro" hidden>
     <div class="wrap">
       <h2 class="big reveal-up">Now actually<br><span class="pink">call me back.</span></h2>
@@ -239,6 +261,23 @@ window.__failsafe = setTimeout(function () {
   </footer>
 
 </main>
+
+<!-- the gift itself. She lives on this site now. -->
+<div class="lizard" id="lizard" hidden>
+  <svg viewBox="0 0 100 160" aria-hidden="true">
+    <g id="lizBody">
+      <path class="liz-leg" d="M40,44 L22,33 L15,40"/>
+      <path class="liz-leg" d="M60,44 L78,33 L85,40"/>
+      <path class="liz-leg" d="M40,72 L21,80 L15,93"/>
+      <path class="liz-leg" d="M60,72 L79,80 L85,93"/>
+      <path class="liz-tail" d="M50,82 C55,104 41,116 52,130 C58,139 49,147 55,155"/>
+      <ellipse class="liz-fill" cx="50" cy="58" rx="16" ry="27"/>
+      <ellipse class="liz-fill" cx="50" cy="22" rx="13" ry="15"/>
+      <circle cx="43" cy="15" r="3.4" fill="#fff"/><circle cx="57" cy="15" r="3.4" fill="#fff"/>
+      <circle cx="43" cy="14.4" r="1.7" fill="#2c3324"/><circle cx="57" cy="14.4" r="1.7" fill="#2c3324"/>
+    </g>
+  </svg>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
