@@ -7,10 +7,14 @@
    ▼▼▼  EDIT THIS BLOCK — this is the only place you need to touch  ▼▼▼
    ===================================================================== */
 const CONFIG = {
-  name:     "Didi",   // her name (or "Didi")
+  name:     "Didi",          // her name (or "Didi")
+  from:     "Me",            // your name
   occasion: "to the one who has had my back since before either of us had a choice",
-  from:     "Me",     // your name
-  date:     "",       // "" = today's date, or write your own
+  date:     "",              // "" = today's date, or write your own
+
+  myCity:   "here",          // your city
+  herCity:  "there",         // her city
+  distance: "a long way",    // e.g. "1,412 km"
 
   // The teasing bubbles while the envelope dodges. The last one always opens it.
   dodges: [
@@ -36,7 +40,10 @@ function fillContent() {
   const date = CONFIG.date || new Date().toLocaleDateString(undefined, {
     day: "numeric", month: "long", year: "numeric"
   });
-  const map = { name: CONFIG.name, occasion: CONFIG.occasion, from: CONFIG.from, date };
+  const map = {
+    name: CONFIG.name, from: CONFIG.from, occasion: CONFIG.occasion, date,
+    myCity: CONFIG.myCity, herCity: CONFIG.herCity, distance: CONFIG.distance
+  };
   $$("[data-fill]").forEach(el => {
     const v = map[el.dataset.fill];
     if (v) el.textContent = v;
@@ -44,31 +51,38 @@ function fillContent() {
 }
 
 /* ---------------------------------------------------------------------
-   preloader
+   preloader — a thread winding onto a spool
    ------------------------------------------------------------------- */
 function runLoader() {
   const loader = $("#loader");
   const count  = $("#loaderCount");
-  const bar    = $("#loaderBar");
+  const ring   = $("#loaderRing");
 
   if (REDUCED) {
     clearTimeout(window.__failsafe);
-    loader.remove(); document.body.classList.remove("is-locked"); intro(); return;
+    loader.remove();
+    document.body.classList.remove("is-locked");
+    intro();
+    return;
   }
 
   document.body.classList.add("is-locked");
+
+  const len = ring.getTotalLength();
+  gsap.set(ring, { strokeDasharray: len, strokeDashoffset: len });
+
   const state = { v: 0 };
 
   gsap.timeline()
     .to(state, {
-      v: 100, duration: 1.7, ease: "power2.inOut",
+      v: 100, duration: 1.6, ease: "power2.inOut",
       onUpdate() {
         const n = Math.round(state.v);
         count.textContent = n;
-        bar.style.width = n + "%";
+        gsap.set(ring, { strokeDashoffset: len * (1 - n / 100) });
       }
     })
-    .to(".loader__inner, .loader__bar", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.15")
+    .to(".loader__inner, .loader__spin", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.15")
     .to(loader, {
       yPercent: -100, duration: 1, ease: "expo.inOut",
       onComplete() {
@@ -82,33 +96,89 @@ function runLoader() {
 }
 
 /* ---------------------------------------------------------------------
-   hero intro
+   hero — the arc between two cities
    ------------------------------------------------------------------- */
 function intro() {
-  gsap.timeline({ defaults: { ease: "expo.out" } })
-    .from("#hero .hero__title .w", { yPercent: 118, duration: 1.25, stagger: .09 })
-    .to("#hero .eyebrow",   { opacity: 1, y: 0, duration: .9 }, .25)
-    .to("#hero .hero__sub", { opacity: 1, y: 0, duration: .9 }, .45)
-    .from(".scroll-hint", { opacity: 0, duration: .8 }, .7)
-    .fromTo(".scroll-hint__line", { scaleX: 0 }, { scaleX: 1, duration: 1.1 }, .75);
+  const arc = $("#arcPath");
+  const len = arc.getTotalLength();
+  gsap.set(arc, { strokeDasharray: len, strokeDashoffset: len });
 
-  gsap.to(".scroll-hint__line", {
-    scaleX: .3, duration: 1.1, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2
+  gsap.timeline({ defaults: { ease: "expo.out" } })
+    .from("#hero .giant .w", { yPercent: 118, duration: 1.3, stagger: .09 })
+    .to("#hero .over", { opacity: 1, y: 0, duration: .9 }, .2)
+    .to("#hero .lede", { opacity: 1, y: 0, duration: .9 }, .45)
+    .to(arc, { strokeDashoffset: 0, duration: 2.2, ease: "power2.inOut" }, .3)
+    .from(".city", { opacity: 0, scale: .6, duration: .9, stagger: .16 }, .9)
+    .from(".hint", { opacity: 0, duration: .8 }, 1.2);
+
+  gsap.to(".hint i", {
+    scaleX: .3, duration: 1.1, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2.2
   });
 }
 
 /* ---------------------------------------------------------------------
-   the rakhi thread, drawn as you scroll
+   KNOT RAIL — the thread is the navigation
    ------------------------------------------------------------------- */
-function thread() {
-  const path = $("#threadPath");
-  if (!path) return;
-  const len = path.getTotalLength();
-  gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-  gsap.to(path, {
-    strokeDashoffset: 0, ease: "none",
-    scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: .6 }
+function rail() {
+  const list = $("#railList");
+  const fill = $("#railFill");
+  const secs = $$("[data-knot]");
+
+  const dots = secs.map((sec, i) => {
+    const li = document.createElement("li");
+    li.className = "rail__item";
+
+    const btn = document.createElement("button");
+    btn.className = "rail__dot";
+    btn.type = "button";
+    btn.setAttribute("aria-label", sec.dataset.knot);
+
+    const tip = document.createElement("span");
+    tip.className = "rail__tip";
+    tip.textContent = sec.dataset.knot;
+
+    // locked beats (the letter, the outro) stay unreachable until earned
+    if (sec.hidden) { btn.disabled = true; li.dataset.locked = "1"; }
+
+    btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+      sec.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+    });
+
+    li.append(btn, tip);
+    list.appendChild(li);
+    return btn;
   });
+
+  function setActive(i) {
+    dots.forEach((d, j) => {
+      d.classList.toggle("is-on", j === i);
+      d.classList.toggle("is-done", j < i);
+    });
+  }
+
+  secs.forEach((sec, i) => {
+    ScrollTrigger.create({
+      trigger: sec, start: "top 55%", end: "bottom 55%",
+      onToggle: self => { if (self.isActive) setActive(i); }
+    });
+  });
+  setActive(0);
+
+  gsap.to(fill, {
+    height: "100%", ease: "none",
+    scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: .5 }
+  });
+
+  // called once the letter is unlocked
+  return function unlock() {
+    secs.forEach((sec, i) => {
+      if (!sec.hidden && dots[i].disabled) {
+        dots[i].disabled = false;
+        delete dots[i].closest(".rail__item").dataset.locked;
+      }
+    });
+  };
 }
 
 /* ---------------------------------------------------------------------
@@ -116,63 +186,50 @@ function thread() {
    ------------------------------------------------------------------- */
 function reveals() {
   $$(".reveal-up").forEach(el => {
-    if (el.closest("#hero")) return;            // hero is handled by intro()
+    if (el.closest("#hero")) return;                 // hero is handled by intro()
     gsap.to(el, {
       opacity: 1, y: 0, duration: 1, ease: "expo.out",
       scrollTrigger: { trigger: el, start: "top 88%" }
     });
   });
 
-  $$(".h2--reveal").forEach(h => {
+  $$(".lines").forEach(h => {
     gsap.from(h.querySelectorAll(".w"), {
       yPercent: 118, duration: 1.15, ease: "expo.out", stagger: .1,
-      scrollTrigger: { trigger: h, start: "top 80%" }
+      scrollTrigger: { trigger: h, start: "top 78%" }
     });
-  });
-
-  gsap.to(".paper", {
-    yPercent: -4, ease: "none",
-    scrollTrigger: { trigger: ".sec--letter", start: "top bottom", end: "bottom top", scrub: true }
   });
 }
 
 /* ---------------------------------------------------------------------
-   the gap — pinned horizontal scroll
+   the distance — pinned horizontal scroll
    ------------------------------------------------------------------- */
 function horizontalGap() {
   const track = $("#htrack");
   const sec   = $("#gap");
+  const hbar  = $("#hbarFill");
   if (!track) return;
 
   const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
 
+  const st = {
+    trigger: sec, start: "top top",
+    end: () => "+=" + dist(), scrub: 1, invalidateOnRefresh: true
+  };
+
   gsap.to(track, {
-    x: () => -dist(),
-    ease: "none",
+    x: () => -dist(), ease: "none",
     scrollTrigger: {
       trigger: sec, start: "top top",
-      end: () => "+=" + (dist() + window.innerHeight * .5),
+      end: () => "+=" + (dist() + window.innerHeight * .4),
       pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
     }
   });
 
-  gsap.to("#months span", {
-    opacity: 1, color: "#1c1714", duration: .5, stagger: .12, ease: "none",
-    scrollTrigger: {
-      trigger: sec, start: "top top",
-      end: () => "+=" + dist(), scrub: 1, invalidateOnRefresh: true
-    }
-  });
-
-  $$(".hpanel").forEach((p, i) => {
-    gsap.fromTo(p, { y: i % 2 ? 26 : -26 }, {
-      y: 0, ease: "none",
-      scrollTrigger: {
-        trigger: sec, start: "top top",
-        end: () => "+=" + dist(), scrub: 1, invalidateOnRefresh: true
-      }
-    });
-  });
+  gsap.to(hbar,          { width: "100%", ease: "none", scrollTrigger: st });
+  gsap.to("#months span", { opacity: 1, duration: .5, stagger: .12, ease: "none", scrollTrigger: st });
+  gsap.to(".swipe",      { opacity: 0, ease: "none",
+    scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + dist() * .3, scrub: 1 } });
 }
 
 /* ---------------------------------------------------------------------
@@ -195,7 +252,7 @@ function chips() {
    happy rakhi
    ------------------------------------------------------------------- */
 function celebrate() {
-  const sec = $("#congrats");
+  const sec = $("#rakhiSec");
 
   gsap.from("#mega span", {
     yPercent: 130, opacity: 0, rotate: 6,
@@ -203,7 +260,7 @@ function celebrate() {
     scrollTrigger: { trigger: sec, start: "top 62%" }
   });
 
-  gsap.fromTo(".burst", { scale: .35, opacity: 0 }, {
+  gsap.fromTo(".glow", { scale: .35, opacity: 0 }, {
     scale: 1, opacity: 1, duration: 2, ease: "expo.out",
     scrollTrigger: { trigger: sec, start: "top 65%" }
   });
@@ -214,81 +271,9 @@ function celebrate() {
 }
 
 /* ---------------------------------------------------------------------
-   the figure — a flat cutout made to feel dimensional
-   Swap assets/img/person.webp for a real background-removed photo.
-   ------------------------------------------------------------------- */
-const Figure = (() => {
-  let img, glow, fig, qx, qy, ready = false;
-
-  function init() {
-    fig  = $("#figure"); img = $("#figureImg"); glow = $(".figure__glow");
-    if (!fig || REDUCED) return;
-
-    qx = gsap.quickTo(img, "x", { duration: .7, ease: "power3" });
-    qy = gsap.quickTo(img, "y", { duration: .7, ease: "power3" });
-
-    // breathing, so it never looks like a dead sticker
-    gsap.to(img, { scale: 1.03, duration: 3.6, repeat: -1, yoyo: true, ease: "sine.inOut" });
-    gsap.fromTo(fig,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1.2, ease: "expo.out",
-        scrollTrigger: { trigger: "#envSec", start: "top 55%" } });
-
-    // desktop: follow the pointer
-    window.addEventListener("pointermove", e => {
-      if (e.pointerType === "touch") return;
-      ready = true;                              // stop the idle sway fighting the pointer
-      apply((e.clientX / window.innerWidth - .5) * 2, (e.clientY / window.innerHeight - .5) * 2);
-    }, { passive: true });
-
-    // gentle idle sway when nothing is driving it
-    gsap.to({ t: 0 }, {
-      t: Math.PI * 2, duration: 9, repeat: -1, ease: "none",
-      onUpdate() {
-        if (ready) return;                       // real tilt takes over
-        const t = this.targets()[0].t;
-        apply(Math.sin(t) * .35, Math.cos(t * .7) * .2);
-      }
-    });
-    ready = false;
-  }
-
-  function apply(nx, ny) {
-    nx = gsap.utils.clamp(-1, 1, nx);
-    ny = gsap.utils.clamp(-1, 1, ny);
-    qx(nx * 15); qy(ny * 10);
-    gsap.to(glow, { x: nx * -7, y: ny * -5, duration: .9, overwrite: "auto" });
-    gsap.to(fig,  { rotationY: nx * 8, rotationX: -ny * 6, duration: .9, overwrite: "auto" });
-  }
-
-  /* iOS needs this asked for from inside a real tap */
-  function requestTilt() {
-    if (REDUCED) return;
-    const DOE = window.DeviceOrientationEvent;
-    if (!DOE) return;
-
-    const listen = () => {
-      window.addEventListener("deviceorientation", e => {
-        if (e.gamma == null && e.beta == null) return;
-        ready = true;
-        apply((e.gamma || 0) / 38, ((e.beta || 0) - 40) / 38);
-      }, { passive: true });
-    };
-
-    if (typeof DOE.requestPermission === "function") {
-      DOE.requestPermission().then(r => { if (r === "granted") listen(); }).catch(() => {});
-    } else {
-      listen();
-    }
-  }
-
-  return { init, requestTilt };
-})();
-
-/* ---------------------------------------------------------------------
    THE ENVELOPE — dodge, tease, then open
    ------------------------------------------------------------------- */
-function envelope() {
+function envelope(unlockRail) {
   const stage   = $("#stage");
   const env     = $("#env");
   const flap    = $("#envFlap");
@@ -296,50 +281,60 @@ function envelope() {
   const letter  = $("#envLetter");
   const rakhi   = $("#envRakhi");
   const bubbles = $("#bubbles");
+  const me      = $("#me");
   const giveup  = $("#giveup");
   const hint    = $("#envHint");
 
-  let dodges = 0, opened = false, busy = false, askedTilt = false;
+  let dodges = 0, opened = false, busy = false;
 
   gsap.set(rakhi, { scale: .82, y: 0 });
 
   const idle = gsap.to(env, {
-    y: "+=9", rotation: 1.2, duration: 2.6,
+    y: "+=8", rotation: 1.2, duration: 2.6,
     ease: "sine.inOut", repeat: -1, yoyo: true
   });
 
-  /* a bubble, stacked upward beside the figure (CSS handles layout) */
-  function bubble(text, gold) {
+  // the circle breathes so it reads as someone waiting
+  if (!REDUCED) {
+    gsap.to(me, { scale: 1.07, duration: 1.9, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  }
+
+  /* a message, stacked in its own reserved row — never covered */
+  function bubble(text, hot) {
     const b = document.createElement("div");
-    b.className = "bubble" + (gold ? " bubble--gold" : "");
+    b.className = "bubble" + (hot ? " bubble--gold" : "");
     b.textContent = text;
     bubbles.appendChild(b);
 
+    // keep the stack short so it always fits the row
+    while (bubbles.children.length > 2) bubbles.firstElementChild.remove();
+
     gsap.fromTo(b,
-      { opacity: 0, scale: .7, x: -16 },
-      { opacity: 1, scale: 1, x: 0, duration: .55, ease: "back.out(2.2)" });
+      { opacity: 0, scale: .8, x: -14 },
+      { opacity: 1, scale: 1, x: 0, duration: .5, ease: "back.out(2.4)" });
+    gsap.fromTo(me, { scale: 1.16 }, { scale: 1, duration: .6, ease: "elastic.out(1,.5)" });
 
     gsap.to(b, {
-      opacity: 0, x: -12, duration: .55, delay: 3.4, ease: "power2.in",
+      opacity: 0, x: -10, duration: .5, delay: 4.2, ease: "power2.in",
       onComplete: () => b.remove()
     });
   }
 
-  /* dodge to a fresh spot inside the stage */
+  /* dodge — the stage is full-bleed, so it has real room to run */
   function dodge() {
     const sr = stage.getBoundingClientRect();
     const er = env.getBoundingClientRect();
-    const maxX = Math.max(10, (sr.width  - er.width)  / 2 - 10);
-    const maxY = Math.max(10, (sr.height - er.height) / 2 - 10);
+    const maxX = Math.max(24, (sr.width  - er.width)  / 2 - 12);
+    const maxY = Math.max(18, (sr.height - er.height) / 2 - 12);
 
     const cur = gsap.getProperty(env, "x");
-    const dir = cur >= 0 ? -1 : 1;              // always runs to the other side
+    const dir = cur >= 0 ? -1 : 1;                     // always bolts to the far side
 
     gsap.to(env, {
-      x: dir * gsap.utils.random(maxX * .45, maxX),
-      y: gsap.utils.random(-maxY, maxY) * .55,
-      rotation: gsap.utils.random(-13, 13),
-      duration: .8, ease: "elastic.out(1, 0.55)", overwrite: "auto"
+      x: dir * gsap.utils.random(maxX * .74, maxX),     // commit to the distance
+      y: gsap.utils.random(-maxY, maxY) * .8,
+      rotation: gsap.utils.random(-15, 15),
+      duration: .85, ease: "elastic.out(1, 0.5)", overwrite: "auto"
     });
   }
 
@@ -353,14 +348,13 @@ function envelope() {
     hint.textContent = "…finally.";
 
     gsap.timeline({ defaults: { ease: "expo.out" }, onComplete: revealLetter })
-      .to(env,   { x: 0, y: 0, rotation: 0, scale: 1.04, duration: .9 })
-      .to(seal,  { scale: 1.16, duration: .18, ease: "power2.out" }, "-=0.15")
-      .to(seal,  { scale: .55, rotation: 26, opacity: 0, duration: .5, ease: "power2.in" })
-      .to(flap,  { rotateX: -168, duration: 1.15, ease: "power3.inOut" }, "-=0.15")
-      .set(flap, { zIndex: 1 }, "-=0.62")
+      .to(env,    { x: 0, y: 0, rotation: 0, scale: 1.04, duration: .9 })
+      .to(seal,   { scale: 1.16, duration: .18, ease: "power2.out" }, "-=0.15")
+      .to(seal,   { scale: .55, rotation: 26, opacity: 0, duration: .5, ease: "power2.in" })
+      .to(flap,   { rotateX: -168, duration: 1.15, ease: "power3.inOut" }, "-=0.15")
+      .set(flap,  { zIndex: 1 }, "-=0.62")
       .to(letter, { y: "-38%", duration: 1.1 }, "-=0.5")
-      // the rakhi comes out too, sitting proud of the letter
-      .to(rakhi, { opacity: 1, y: "-58%", x: "-18%", rotate: -13, scale: 1, duration: 1.15 }, "-=0.85")
+      .to(rakhi,  { opacity: 1, y: "-58%", x: "-18%", rotate: -13, scale: 1, duration: 1.15 }, "-=0.85")
       .to(letter, { scale: 1.02, duration: .5 }, "-=0.3");
   }
 
@@ -368,6 +362,7 @@ function envelope() {
     const letterSec = $("#letterSec");
     $("#outro").hidden = false;
     letterSec.hidden = false;
+    if (unlockRail) unlockRail();
 
     gsap.fromTo("#paper",
       { opacity: 0, y: 60, rotateX: 8, scale: .96 },
@@ -387,7 +382,6 @@ function envelope() {
   }
 
   function poke() {
-    if (!askedTilt) { askedTilt = true; Figure.requestTilt(); }   // must ride a real tap
     if (opened || busy) return;
 
     if (dodges < CONFIG.dodges.length) {
@@ -396,7 +390,7 @@ function envelope() {
       dodge();
       dodges++;
       if (dodges >= 2) giveup.hidden = false;
-      setTimeout(() => { busy = false; }, 420);   // a fast double-tap shouldn't burn two
+      setTimeout(() => { busy = false; }, 430);   // a fast double-tap shouldn't burn two
       return;
     }
     open();
@@ -430,13 +424,12 @@ function chrome() {
    boot
    ------------------------------------------------------------------- */
 fillContent();
-thread();
+const unlockRail = rail();
 reveals();
 horizontalGap();
 chips();
 celebrate();
-Figure.init();
-envelope();
+envelope(unlockRail);
 chrome();
 runLoader();
 
