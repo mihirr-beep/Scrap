@@ -672,16 +672,16 @@ function gift() {
    the p.s. cards — tap to flip, tap to close
    ------------------------------------------------------------------- */
 function secrets() {
-  // hidden in plain sight, placed in REVERSE order of weight:
-  // the blessing first (hero rakhi), the confession (AUG tile),
-  // and the biggest thing said smallest — the final full stop.
+  // hidden in plain sight: "I love you" first (the hero rakhi),
+  // the confession in the middle (AUG tile), and the blessing last,
+  // sitting inside the final full stop of the whole site.
   const notes = [
     { sel: "#hang",
-      text: "I hope you stay happy. Don't let bad people chase you. Don't marry very early — live life, see the world around. I'll be backing you up if any pressure comes. Don't worry." },
+      text: "Obviously — I love you." },
     { sel: "#months span:nth-child(8)",   // AUG — the month that matters
       text: "Sometimes I think I don't talk to you much, or never open up to you as I should have. Let me know what you feel about it." },
     { sel: "#dot",
-      text: "Obviously — I love you." }
+      text: "I hope you stay happy. Don't let bad people chase you. Don't marry very early — live life, see the world around. I'll be backing you up if any pressure comes. Don't worry." }
   ];
 
   const note = $("#note"), txt = $("#noteText"), cnt = $("#noteCount");
