@@ -16,7 +16,7 @@ const CONFIG = {
   // or after all 5 questions regardless. Q3 is rigged: the rating is 5.
   quiz: [
     {
-      q: "First — what did we actually DO on Raksha Bandhan?",
+      q: "What WE used to do on Raksha Bandhan?",
       a: ["Tie the rakhi, obviously", "I don't know", "Some grand family ritual"],
       correct: 1,
       right: "Exactly. Nobody remembers. That's our tradition.",
@@ -26,8 +26,8 @@ const CONFIG = {
       q: "The smartwatch you gifted me — am I using it?",
       a: ["Yes, every day", "No", "What smartwatch?"],
       correct: 1,
-      right: "Correct. It sleeps in a drawer. Peacefully.",
-      wrong: "Cute of you to think so. Drawer. Since day one."
+      right: "Correct. Never even opened it. The box looks great though.",
+      wrong: "Wrong. It has never touched my wrist — still sealed in the box it came in. The box is doing well."
     },
     {
       special: "rating",

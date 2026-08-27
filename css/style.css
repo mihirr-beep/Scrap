@@ -68,7 +68,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   display:grid;place-items:center;
 }
 .loader__inner{display:flex;flex-direction:column;align-items:center;gap:8px;grid-area:1/1;z-index:2}
-.loader__label{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-3)}
+.loader__label{
+  position:absolute;left:0;right:0;text-align:center;
+  top:calc(50% - clamp(96px,28vw,136px));   /* clear of the ring, above it */
+  font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-3);
+}
 .loader__count{font-family:var(--f-display);font-size:clamp(44px,13vw,80px);line-height:1;color:var(--pink)}
 .loader__spin{grid-area:1/1;width:clamp(130px,40vw,200px);aspect-ratio:1;transform:rotate(-90deg)}
 
