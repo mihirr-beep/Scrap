@@ -177,7 +177,7 @@ window.__failsafe = setTimeout(function () {
   <section class="sec sec--env" id="envSec">
     <div class="wrap wrap--tight">
       <h2 class="big reveal-up">There&rsquo;s one<br>more thing.</h2>
-      <p class="body reveal-up" id="envHint">She&rsquo;s guarding it. Answer her questions.</p>
+      <p class="body reveal-up" id="envHint">The cat is guarding it. Answer its questions.</p>
     </div>
 
     <!-- reserved row: the circle and its messages. The envelope roams the
@@ -256,41 +256,26 @@ window.__failsafe = setTimeout(function () {
   <!-- ============ 9. OUTRO ============ -->
   <footer class="sec sec--outro" id="outro" hidden>
     <div class="wrap">
-      <h2 class="big reveal-up">Now actually<br><span class="pink">call me back.</span></h2>
+      <h2 class="big reveal-up">Now actually<br><span class="pink">call me back<button class="dot" id="dot" aria-label="a hidden note">.</button></span></h2>
       <p class="body reveal-up">
         I&rsquo;m serious. The phone works both ways.<br>
         And keep the thread &mdash; I&rsquo;ll come collect it in person.
       </p>
       <button class="replay" id="replay">read it again</button>
 
-      <!-- the things I didn't say out loud. they flip. -->
-      <div class="ps">
-        <p class="ps__hint">p.s. &mdash; these flip</p>
-        <div class="secrets">
-          <button class="secret" aria-label="A hidden note">
-            <span class="secret__inner">
-              <span class="secret__front">&#9825;</span>
-              <span class="secret__back">Obviously &mdash; I love you.</span>
-            </span>
-          </button>
-          <button class="secret" aria-label="A hidden note">
-            <span class="secret__inner">
-              <span class="secret__front">&#10022;</span>
-              <span class="secret__back">Sometimes I think I don&rsquo;t talk to you much, or never open up to you as I should have. Let me know what you feel about it.</span>
-            </span>
-          </button>
-          <button class="secret" aria-label="A hidden note">
-            <span class="secret__inner">
-              <span class="secret__front">&#10048;</span>
-              <span class="secret__back">I hope you stay happy. Don&rsquo;t let bad people chase you. Don&rsquo;t marry very early &mdash; live life, see the world around. I&rsquo;ll be backing you up if any pressure comes. Don&rsquo;t worry.</span>
-            </span>
-          </button>
-        </div>
-      </div>
     </div>
   </footer>
 
 </main>
+
+<!-- found notes are read here. three triggers hide in plain sight:
+     the hanging rakhi, the AUG tile, and the final full stop. -->
+<div class="note" id="note" hidden>
+  <div class="note__card">
+    <p class="note__text" id="noteText"></p>
+    <p class="note__count" id="noteCount"></p>
+  </div>
+</div>
 
 <!-- the gift itself: a real chhipkali, cut from a photo. She lives here now. -->
 <div class="lizard" id="lizard" hidden>

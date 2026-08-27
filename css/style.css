@@ -307,9 +307,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .me{
   flex:0 0 auto;position:relative;
-  width:clamp(42px,12vw,56px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 32% 28%,var(--gold-2),var(--pink) 72%);
+  width:clamp(46px,13vw,60px);aspect-ratio:1;border-radius:50%;
+  background:url("../assets/img/cat.webp") center/cover,var(--pink);
   box-shadow:0 6px 18px rgba(194,37,92,.36);
+  border:2px solid var(--card);
   will-change:transform;
 }
 .me::after{
@@ -520,37 +521,34 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .replay:hover{transform:translateY(-2px);background:var(--pink-2);box-shadow:0 14px 32px rgba(194,37,92,.4)}
 
-/* --- p.s. — the flip-card secrets --- */
-.ps{margin-top:clamp(44px,8vh,72px)}
-.ps__hint{
-  margin:0 0 14px;
-  font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--ink-3);
+/* --- the hidden notes --- */
+.dot{
+  font:inherit;color:inherit;padding:0;background:none;border:0;
+  position:relative;display:inline;cursor:default;
 }
-.secrets{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-.secret{
-  width:min(236px,84vw);height:172px;
-  perspective:900px;-webkit-tap-highlight-color:transparent;
+.dot::after{content:"";position:absolute;inset:-16px}  /* secret thumb target */
+
+.note{
+  position:fixed;inset:0;z-index:96;
+  display:grid;place-items:center;padding:24px;
+  background:rgba(58,17,48,.44);
+  cursor:pointer;
 }
-.secret__inner{
-  position:relative;display:block;width:100%;height:100%;
+.note__card{
+  width:min(360px,88vw);
+  background:url("../assets/img/paper-white.webp") center/300%,#fffdf9;
+  border-radius:14px;padding:clamp(24px,6vw,34px);
+  box-shadow:0 30px 70px -18px rgba(30,6,22,.55);
   transform-style:preserve-3d;
-  transition:transform .8s var(--e-out);
 }
-.secret.is-open .secret__inner{transform:rotateY(180deg)}
-.secret__front,.secret__back{
-  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:14px;display:grid;place-items:center;padding:16px;
+.note__text{
+  margin:0;font-family:var(--f-hand);
+  font-size:clamp(17px,4.8vw,21px);line-height:1.55;color:var(--ink);
 }
-.secret__front{
-  background:var(--card);color:var(--gold);font-size:26px;
-  box-shadow:0 8px 22px rgba(58,17,48,.1);
-  border:1px solid rgba(194,37,92,.14);
-}
-.secret__back{
-  background:var(--pink);color:#fff;transform:rotateY(180deg);
-  font-family:var(--f-hand);font-size:14px;line-height:1.5;text-align:center;
-  box-shadow:0 8px 22px rgba(194,37,92,.3);
+.note__count{
+  margin:18px 0 0;
+  font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--pink);
 }
 
 .reveal-up{opacity:0;transform:translateY(22px)}
@@ -584,4 +582,3 @@ html.no-motion .gift__lid{transform:translateY(-90%) rotate(-16deg)}
 html.no-motion .lizard{display:block;left:auto;right:18px;top:auto;bottom:16px}
 html.no-motion .lizard[hidden]{display:block !important}
 html.no-motion .quiz{display:none}
-html.no-motion .secret__inner{transform:rotateY(180deg)}

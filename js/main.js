@@ -47,11 +47,11 @@ const CONFIG = {
       wrong: "Liar. We both know it's you."
     },
     {
-      q: "How many times did we say “I'll call this weekend” this year?",
-      a: ["Twice", "Never", "Lost count"],
-      correct: 2,
-      right: "And yet. Here we are.",
-      wrong: "“Lost count.” The answer was “lost count.”"
+      q: "Last one — which is better: cat or dog?",
+      a: ["Cat", "Dog", "Depends on the mood"],
+      correct: 0,
+      right: "Obviously. The interviewer is a cat.",
+      wrong: "Wrong. And she heard that."
     }
   ]
 };
@@ -529,7 +529,7 @@ function envelope() {
   function finish(passed) {
     quizBox.innerHTML = "";
     bubble(passed
-      ? "Fine. " + correct + " right. She approves — opening it."
+      ? "Fine. " + correct + " right. The cat approves — opening it."
       : "That was genuinely bad. Opening it anyway — it's Rakhi.", true);
     setTimeout(open, 1300);
   }
@@ -543,7 +543,7 @@ function envelope() {
   // poking the envelope early just makes it run
   env.addEventListener("click", () => {
     if (opened) return;
-    bubble("Answer her first.");
+    bubble("The cat says: answer first.");
     dodge();
   });
   giveup.addEventListener("click", () => { if (!opened) open(); });
@@ -666,14 +666,44 @@ function gift() {
    the p.s. cards — tap to flip, tap to close
    ------------------------------------------------------------------- */
 function secrets() {
-  $$(".secret").forEach(card => {
-    card.addEventListener("click", () => {
-      card.classList.toggle("is-open");
-      if (!REDUCED && card.classList.contains("is-open")) {
-        gsap.fromTo(card, { scale: .96 }, { scale: 1, duration: .6, ease: "back.out(2.5)" });
-      }
-    });
+  // hidden in plain sight, placed in REVERSE order of weight:
+  // the blessing first (hero rakhi), the confession (AUG tile),
+  // and the biggest thing said smallest — the final full stop.
+  const notes = [
+    { sel: "#hang",
+      text: "I hope you stay happy. Don't let bad people chase you. Don't marry very early — live life, see the world around. I'll be backing you up if any pressure comes. Don't worry." },
+    { sel: "#months span:nth-child(8)",   // AUG — the month that matters
+      text: "Sometimes I think I don't talk to you much, or never open up to you as I should have. Let me know what you feel about it." },
+    { sel: "#dot",
+      text: "Obviously — I love you." }
+  ];
+
+  const note = $("#note"), txt = $("#noteText"), cnt = $("#noteCount");
+  const found = new Set();
+
+  function show(i, text) {
+    found.add(i);
+    txt.textContent = text;
+    const left = notes.length - found.size;
+    cnt.textContent = left === 0
+      ? "you found all three."
+      : "hidden note " + found.size + " of 3 — " + left + " more hiding";
+    note.hidden = false;
+    if (!REDUCED) {
+      gsap.fromTo(".note__card",
+        { rotationY: 85, opacity: 0, scale: .85 },
+        { rotationY: 0, opacity: 1, scale: 1, duration: .75, ease: "back.out(1.5)" });
+    }
+  }
+
+  notes.forEach((n, i) => {
+    const el = $(n.sel);
+    if (!el) return;
+    el.style.pointerEvents = "auto";
+    el.addEventListener("click", e => { e.stopPropagation(); show(i, n.text); });
   });
+
+  note.addEventListener("click", () => { note.hidden = true; });
 }
 
 /* ---------------------------------------------------------------------
