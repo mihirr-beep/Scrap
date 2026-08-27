@@ -35,11 +35,10 @@ window.__failsafe = setTimeout(function () {
 
 <!-- ============ PRELOADER ============ -->
 <div class="loader" id="loader">
-  <div class="loader__inner">
-    <span class="loader__label">tying the first knot</span>
+  <span class="loader__label">tying the first knot</span>
+  <div class="loader__stack">
     <span class="loader__count" id="loaderCount">0</span>
-  </div>
-  <svg class="loader__spin" viewBox="0 0 120 120" aria-hidden="true">
+    <svg class="loader__spin" viewBox="0 0 120 120" aria-hidden="true">
     <circle id="loaderRing" cx="60" cy="60" r="52" fill="none"
             stroke="url(#lg)" stroke-width="2.5" stroke-linecap="round"/>
     <defs>
@@ -48,6 +47,7 @@ window.__failsafe = setTimeout(function () {
       </linearGradient>
     </defs>
   </svg>
+  </div>
 </div>
 
 <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
@@ -177,7 +177,7 @@ window.__failsafe = setTimeout(function () {
   <section class="sec sec--env" id="envSec">
     <div class="wrap wrap--tight">
       <h2 class="big reveal-up">There&rsquo;s one<br>more thing.</h2>
-      <p class="body reveal-up" id="envHint">The cat is guarding it. Answer its questions.</p>
+      <p class="body reveal-up" id="envHint">The cat is guarding it. Get <strong>3 answers right</strong> and it opens.</p>
     </div>
 
     <!-- reserved row: the circle and its messages. The envelope roams the
@@ -222,7 +222,7 @@ window.__failsafe = setTimeout(function () {
           <p>I will just write something in short:</p>
           <p>&mdash; So I hope you are having a good time there (now) [as there is no college now].</p>
           <p>&mdash; How are your weekends going? (Mine are just: sleep all day, play something on the PC on repeat, not going outside due to the heat.)</p>
-          <p>&mdash; I am not writing any fancy or emotional things here, so don&rsquo;t read it with concentration.</p>
+          <p class="paper__hold">&mdash; HOLD &mdash; I am not writing any fancy or emotional things here, so don&rsquo;t read it with concentration.</p>
           <p>&mdash; It&rsquo;s just that I had free time (no work in office), so I made all of this which I didn&rsquo;t need to make.</p>
           <p>I wanted to give you a gift, but I don&rsquo;t actually know what to gift &mdash; and also where you live. So I&rsquo;m sending a gift via this site (Why? Cuz why not).</p>
           <p>At the last, there is one box &mdash; yeah, that&rsquo;s your gift.</p>

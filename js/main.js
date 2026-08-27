@@ -115,7 +115,7 @@ function runLoader() {
         gsap.set(ring, { strokeDashoffset: len * (1 - n / 100) });
       }
     })
-    .to(".loader__inner, .loader__spin", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.1")
+    .to(".loader__label, .loader__stack", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.1")
     .to(loader, {
       yPercent: -100, duration: 1, ease: "expo.inOut",
       onComplete() {
@@ -403,6 +403,7 @@ function envelope() {
         onComplete: () => b.remove()
       });
     }
+    return b;
   }
 
   /* dodge — the stage is full-bleed, so it has real room to run */
@@ -499,8 +500,13 @@ function envelope() {
     if (qi >= CONFIG.quiz.length) { finish(false); return; }
     if (qi >= 3) giveup.hidden = false;          // escape hatch for the impatient
     const q = CONFIG.quiz[qi];
-    bubble(q.q, false, true);
-    renderChoices(q.a, i => answer(q, i));
+    const dots = bubble("• • •", false, true);   // the cat is typing…
+    dots.classList.add("bubble--typing");
+    setTimeout(() => {
+      dots.remove();
+      bubble(q.q, false, true);
+      renderChoices(q.a, i => answer(q, i));
+    }, 850);
   }
 
   function answer(q, i) {
@@ -514,7 +520,7 @@ function envelope() {
         correct++;                               // rigged either way
         bubble(sel === 1 ? q.thanks : q.fine, true);
         hop();
-        nextQuestion(1900);
+        nextQuestion(2500);
       });
       resolving = false;                         // the insist choices must be live
       return;
@@ -523,7 +529,7 @@ function envelope() {
     const ok = i === q.correct;
     if (ok) { correct++; bubble(q.right, true); hop(); }
     else    { bubble(q.wrong); dodge(); }
-    nextQuestion(1900);
+    nextQuestion(2500);
   }
 
   function finish(passed) {
@@ -537,7 +543,12 @@ function envelope() {
   // start once, when this beat scrolls into view
   ScrollTrigger.create({
     trigger: "#envSec", start: "top 60%", once: true,
-    onEnter: () => { if (!quizStarted) { quizStarted = true; setTimeout(ask, 700); } }
+    onEnter: () => {
+      if (quizStarted) return;
+      quizStarted = true;
+      setTimeout(() => bubble("Rules: 3 right answers and the envelope opens."), 500);
+      setTimeout(ask, 2300);
+    }
   });
 
   // poking the envelope early just makes it run
