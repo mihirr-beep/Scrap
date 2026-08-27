@@ -13,11 +13,12 @@ Two places only:
 2. **`index.html`** — the block marked `EDIT ME — WRITE THIS YOURSELF` inside
    `.paper__body`. That is the letter. Write it yourself; that is the whole point.
 
-## The idea
+## The look
 
-A rakhi is a thread. Distance is a gap. A thread crossing a gap is the whole
-story, so the thread is both the structure and the navigation: each beat is a
-knot on the rail down the right edge, and scroll progress fills it in.
+Wedding-card palette: blush white, rani pink, gold, deep plum ink. Type is
+Rozha One (Indian Type Foundry) over Karla, with Kalam for the handwriting.
+A toran garland runs along the top of the hero and the real rakhi hangs from
+it on a gold thread, swinging gently.
 
 Eight beats, one per screen. Every section is exactly one viewport tall and the
 scroll snaps to it, so you never land halfway between two of them.
@@ -34,7 +35,7 @@ Then open http://localhost:5500
 
 `assets/img/` holds real photographic materials — blush envelope paper, a gold
 wax seal cut out with an organic alpha edge, a real rakhi keyed off a saturation
-mask, white paper stock, and grain. 209KB total.
+mask, and white paper stock. 138KB total.
 
 The envelope is assembled in CSS from those materials rather than being one flat
 photo, so its flap can actually hinge open in 3D. A flat photo cannot animate.

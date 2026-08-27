@@ -12,10 +12,6 @@ const CONFIG = {
   occasion: "to the one who has had my back since before either of us had a choice",
   date:     "",              // "" = today's date, or write your own
 
-  myCity:   "here",          // your city
-  herCity:  "there",         // her city
-  distance: "a long way",    // e.g. "1,412 km"
-
   // The teasing bubbles while the envelope dodges. The last one always opens it.
   dodges: [
     "nope. not yet.",
@@ -37,12 +33,13 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
    content fill
    ------------------------------------------------------------------- */
 function fillContent() {
-  const date = CONFIG.date || new Date().toLocaleDateString(undefined, {
+  const now = new Date();
+  const date = CONFIG.date || now.toLocaleDateString(undefined, {
     day: "numeric", month: "long", year: "numeric"
   });
   const map = {
-    name: CONFIG.name, from: CONFIG.from, occasion: CONFIG.occasion, date,
-    myCity: CONFIG.myCity, herCity: CONFIG.herCity, distance: CONFIG.distance
+    name: CONFIG.name, from: CONFIG.from, occasion: CONFIG.occasion,
+    date, year: String(now.getFullYear())
   };
   $$("[data-fill]").forEach(el => {
     const v = map[el.dataset.fill];
@@ -51,7 +48,7 @@ function fillContent() {
 }
 
 /* ---------------------------------------------------------------------
-   preloader — a thread winding onto a spool
+   preloader — a thread winding into a ring
    ------------------------------------------------------------------- */
 function runLoader() {
   const loader = $("#loader");
@@ -75,14 +72,14 @@ function runLoader() {
 
   gsap.timeline()
     .to(state, {
-      v: 100, duration: 1.6, ease: "power2.inOut",
+      v: 100, duration: 1.5, ease: "power2.inOut",
       onUpdate() {
         const n = Math.round(state.v);
         count.textContent = n;
         gsap.set(ring, { strokeDashoffset: len * (1 - n / 100) });
       }
     })
-    .to(".loader__inner, .loader__spin", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.15")
+    .to(".loader__inner, .loader__spin", { opacity: 0, y: -14, duration: .5, ease: "power2.in" }, "+=0.1")
     .to(loader, {
       yPercent: -100, duration: 1, ease: "expo.inOut",
       onComplete() {
@@ -96,89 +93,32 @@ function runLoader() {
 }
 
 /* ---------------------------------------------------------------------
-   hero — the arc between two cities
+   hero — the rakhi drops in and swings from the garland
    ------------------------------------------------------------------- */
 function intro() {
-  const arc = $("#arcPath");
-  const len = arc.getTotalLength();
-  gsap.set(arc, { strokeDasharray: len, strokeDashoffset: len });
-
   gsap.timeline({ defaults: { ease: "expo.out" } })
-    .from("#hero .giant .w", { yPercent: 118, duration: 1.3, stagger: .09 })
+    .from("#hero .giant .w", { yPercent: 118, duration: 1.25, stagger: .09 })
     .to("#hero .over", { opacity: 1, y: 0, duration: .9 }, .2)
     .to("#hero .lede", { opacity: 1, y: 0, duration: .9 }, .45)
-    .to(arc, { strokeDashoffset: 0, duration: 2.2, ease: "power2.inOut" }, .3)
-    .from(".city", { opacity: 0, scale: .6, duration: .9, stagger: .16 }, .9)
-    .from(".hint", { opacity: 0, duration: .8 }, 1.2);
+    .from("#hang", { y: -220, opacity: 0, duration: 1.5, ease: "expo.out" }, .35)
+    .from(".hint", { opacity: 0, duration: .8 }, 1.1);
+
+  if (!REDUCED) {
+    // gentle pendulum, hinged where the thread meets the garland
+    gsap.fromTo("#hang",
+      { rotation: -3.5, transformOrigin: "50% 0" },
+      { rotation: 3.5, duration: 2.6, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 1.6 });
+  }
+
+  // drifts up and away as you leave the hero
+  gsap.to("#hang", {
+    y: 90, ease: "none",
+    scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true }
+  });
 
   gsap.to(".hint i", {
     scaleX: .3, duration: 1.1, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 2.2
   });
-}
-
-/* ---------------------------------------------------------------------
-   KNOT RAIL — the thread is the navigation
-   ------------------------------------------------------------------- */
-function rail() {
-  const list = $("#railList");
-  const fill = $("#railFill");
-  const secs = $$("[data-knot]");
-
-  const dots = secs.map((sec, i) => {
-    const li = document.createElement("li");
-    li.className = "rail__item";
-
-    const btn = document.createElement("button");
-    btn.className = "rail__dot";
-    btn.type = "button";
-    btn.setAttribute("aria-label", sec.dataset.knot);
-
-    const tip = document.createElement("span");
-    tip.className = "rail__tip";
-    tip.textContent = sec.dataset.knot;
-
-    // locked beats (the letter, the outro) stay unreachable until earned
-    if (sec.hidden) { btn.disabled = true; li.dataset.locked = "1"; }
-
-    btn.addEventListener("click", () => {
-      if (btn.disabled) return;
-      sec.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
-    });
-
-    li.append(btn, tip);
-    list.appendChild(li);
-    return btn;
-  });
-
-  function setActive(i) {
-    dots.forEach((d, j) => {
-      d.classList.toggle("is-on", j === i);
-      d.classList.toggle("is-done", j < i);
-    });
-  }
-
-  secs.forEach((sec, i) => {
-    ScrollTrigger.create({
-      trigger: sec, start: "top 55%", end: "bottom 55%",
-      onToggle: self => { if (self.isActive) setActive(i); }
-    });
-  });
-  setActive(0);
-
-  gsap.to(fill, {
-    height: "100%", ease: "none",
-    scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: .5 }
-  });
-
-  // called once the letter is unlocked
-  return function unlock() {
-    secs.forEach((sec, i) => {
-      if (!sec.hidden && dots[i].disabled) {
-        dots[i].disabled = false;
-        delete dots[i].closest(".rail__item").dataset.locked;
-      }
-    });
-  };
 }
 
 /* ---------------------------------------------------------------------
@@ -207,7 +147,6 @@ function reveals() {
 function horizontalGap() {
   const track = $("#htrack");
   const sec   = $("#gap");
-  const hbar  = $("#hbarFill");
   if (!track) return;
 
   const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
@@ -226,10 +165,12 @@ function horizontalGap() {
     }
   });
 
-  gsap.to(hbar,          { width: "100%", ease: "none", scrollTrigger: st });
+  gsap.to("#hbarFill",    { width: "100%", ease: "none", scrollTrigger: st });
   gsap.to("#months span", { opacity: 1, duration: .5, stagger: .12, ease: "none", scrollTrigger: st });
-  gsap.to(".swipe",      { opacity: 0, ease: "none",
-    scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + dist() * .3, scrub: 1 } });
+  gsap.to(".swipe", {
+    opacity: 0, ease: "none",
+    scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + dist() * .3, scrub: 1 }
+  });
 }
 
 /* ---------------------------------------------------------------------
@@ -273,7 +214,7 @@ function celebrate() {
 /* ---------------------------------------------------------------------
    THE ENVELOPE — dodge, tease, then open
    ------------------------------------------------------------------- */
-function envelope(unlockRail) {
+function envelope() {
   const stage   = $("#stage");
   const env     = $("#env");
   const flap    = $("#envFlap");
@@ -362,7 +303,6 @@ function envelope(unlockRail) {
     const letterSec = $("#letterSec");
     $("#outro").hidden = false;
     letterSec.hidden = false;
-    if (unlockRail) unlockRail();
 
     gsap.fromTo("#paper",
       { opacity: 0, y: 60, rotateX: 8, scale: .96 },
@@ -424,12 +364,11 @@ function chrome() {
    boot
    ------------------------------------------------------------------- */
 fillContent();
-const unlockRail = rail();
 reveals();
 horizontalGap();
 chips();
 celebrate();
-envelope(unlockRail);
+envelope();
 chrome();
 runLoader();
 

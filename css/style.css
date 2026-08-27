@@ -1,46 +1,45 @@
 /* =====================================================================
-   Happy Rakhi — different cities, one thread.
-   Mobile-first. GSAP handles motion; this file handles material.
+   Happy Rakhi — a wedding-card of a website.
+   Blush white, rani pink, gold. Rozha One doing the shouting.
    ===================================================================== */
 
 :root{
-  --paper:#f7f0e3;
-  --paper-2:#efe4d1;
-  --paper-3:#e6d8c0;
+  --bg:#fff5f7;          /* blush white */
+  --bg-2:#ffe9ef;        /* soft pink wash */
+  --card:#ffffff;
 
-  --ink:#2a1520;
-  --ink-2:rgba(42,21,32,.7);
-  --ink-3:rgba(42,21,32,.44);
+  --ink:#3a1130;         /* deep plum, not black */
+  --ink-2:rgba(58,17,48,.72);
+  --ink-3:rgba(58,17,48,.46);
 
-  --vermilion:#d93d1a;
-  --marigold:#e8971a;
-  --marigold-lt:#f6b53f;
+  --pink:#c2255c;        /* rani pink */
+  --pink-2:#e0447f;
+  --gold:#d99a2b;
+  --gold-2:#efb93f;
 
-  --pad:clamp(22px,6vw,86px);
-  --rail:clamp(28px,8vw,60px);
-  --maxw:1200px;
+  --pad:clamp(22px,6vw,90px);
+  --maxw:1180px;
 
-  --f-display:"Fraunces",Georgia,serif;
-  --f-ui:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --f-display:"Rozha One",Georgia,serif;
+  --f-ui:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --f-hand:"Kalam","Segoe Script",cursive;
 
-  --wonk:"SOFT" 40,"WONK" 1;
   --e-out:cubic-bezier(.16,1,.3,1);
 }
 
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;background:var(--paper)}
+html{-webkit-text-size-adjust:100%;background:var(--bg)}
 
-/* the fix for "we only see part of the next section":
-   every beat fills the viewport and the scroll lands on it. */
+/* every beat fills the screen and the scroll lands on it —
+   no stopping halfway between two sections. */
 html{scroll-snap-type:y proximity;scroll-behavior:smooth}
 
 body{
-  background:var(--paper);
+  background:var(--bg);
   color:var(--ink);
   font-family:var(--f-ui);
-  font-weight:300;
+  font-weight:400;
   line-height:1.6;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
@@ -50,67 +49,26 @@ body.is-locked{overflow:hidden;height:100vh}
 img{max-width:100%;display:block}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 [hidden]{display:none !important}
-::selection{background:var(--marigold);color:var(--ink)}
+::selection{background:var(--pink);color:#fff}
 
-.grain{
-  position:fixed;inset:0;z-index:1;pointer-events:none;
-  background-image:url("../assets/img/grain.png");
-  opacity:.4;mix-blend-mode:multiply;
-}
 .progress{
-  position:fixed;top:0;left:0;right:0;height:2px;z-index:80;
-  background:rgba(42,21,32,.08);pointer-events:none;
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:80;
+  background:rgba(58,17,48,.07);pointer-events:none;
 }
 .progress i{
   display:block;height:100%;width:0%;
-  background:linear-gradient(90deg,var(--marigold),var(--vermilion));
+  background:linear-gradient(90deg,var(--pink),var(--gold-2));
 }
 
 /* ---------- preloader ---------- */
 .loader{
-  position:fixed;inset:0;z-index:100;background:var(--paper);
+  position:fixed;inset:0;z-index:100;background:var(--bg);
   display:grid;place-items:center;
 }
-.loader__inner{display:flex;flex-direction:column;align-items:center;gap:10px;grid-area:1/1;z-index:2}
+.loader__inner{display:flex;flex-direction:column;align-items:center;gap:8px;grid-area:1/1;z-index:2}
 .loader__label{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-3)}
-.loader__count{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-size:clamp(46px,14vw,86px);line-height:1;
-}
+.loader__count{font-family:var(--f-display);font-size:clamp(44px,13vw,80px);line-height:1;color:var(--pink)}
 .loader__spin{grid-area:1/1;width:clamp(130px,40vw,200px);aspect-ratio:1;transform:rotate(-90deg)}
-
-/* =====================================================================
-   KNOT RAIL — the thread is the navigation
-   ===================================================================== */
-.rail{position:fixed;right:clamp(8px,2.2vw,20px);top:50%;transform:translateY(-50%);z-index:70}
-.rail__line{position:absolute;left:5px;top:4px;bottom:4px;width:1px;background:rgba(42,21,32,.16)}
-.rail__line i{
-  position:absolute;left:0;top:0;width:100%;height:0%;
-  background:linear-gradient(180deg,var(--marigold),var(--vermilion));
-}
-.rail__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(13px,2.6vh,22px)}
-.rail__item{position:relative;display:flex;align-items:center;justify-content:flex-end}
-.rail__dot{position:relative;width:11px;height:11px;padding:0;display:grid;place-items:center}
-.rail__dot::after{
-  content:"";width:7px;height:7px;border-radius:50%;
-  border:1px solid rgba(42,21,32,.4);background:var(--paper);
-  transition:transform .45s var(--e-out),background .45s var(--e-out),border-color .45s var(--e-out);
-}
-.rail__dot.is-on::after{
-  background:var(--vermilion);border-color:var(--vermilion);
-  transform:scale(1.55);box-shadow:0 0 0 4px rgba(217,61,26,.16);
-}
-.rail__dot.is-done::after{background:rgba(42,21,32,.34)}
-.rail__tip{
-  position:absolute;right:22px;white-space:nowrap;
-  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);
-  opacity:0;transform:translateX(6px);pointer-events:none;
-  transition:opacity .35s var(--e-out),transform .35s var(--e-out);
-}
-.rail__dot:hover + .rail__tip,
-.rail__dot:focus-visible + .rail__tip,
-.rail__dot.is-on + .rail__tip{opacity:1;transform:translateX(0)}
-@media (max-width:600px){ .rail__tip{display:none} }
 
 /* =====================================================================
    LAYOUT — one beat per screen
@@ -119,147 +77,180 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   position:relative;z-index:2;
   min-height:100svh;
   display:flex;align-items:center;
-  padding:clamp(92px,12vh,144px) calc(var(--pad) + var(--rail)) clamp(76px,10vh,124px) var(--pad);
+  padding:clamp(90px,12vh,140px) var(--pad) clamp(74px,10vh,120px);
   scroll-snap-align:start;
 }
 .sec[data-nosnap]{scroll-snap-align:none}
 .wrap{width:100%;max-width:var(--maxw);margin:0 auto}
-.wrap--tight{max-width:640px}
+.wrap--tight{max-width:660px}
 
 /* =====================================================================
-   TYPE
+   TYPE — Rozha One does the talking
    ===================================================================== */
 .giant,.mega,.big{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-weight:400;margin:0;letter-spacing:-.03em;line-height:.92;
+  font-family:var(--f-display);font-weight:400;margin:0;
+  line-height:1;letter-spacing:0;
 }
-.giant{font-size:clamp(66px,19vw,188px)}
-.mega{font-size:clamp(44px,13vw,172px);display:flex;flex-wrap:wrap;line-height:.9}
+.giant{font-size:clamp(56px,16vw,164px);line-height:.98}
+.mega{font-size:clamp(44px,12.5vw,168px);display:flex;flex-wrap:wrap;line-height:.95}
 .mega span{display:inline-block;will-change:transform}
-.mega__sp{width:.28em;flex:0 0 auto}
-.big{font-size:clamp(36px,9.6vw,88px)}
+.mega__sp{width:.3em;flex:0 0 auto}
+.big{font-size:clamp(34px,8.8vw,80px);line-height:1.04}
 
-.gold{font-style:italic;color:var(--vermilion);font-variation-settings:"SOFT" 60,"WONK" 1}
+.pink{color:var(--pink)}
 
 .line{display:block;overflow:hidden}
 .line .w{display:inline-block;will-change:transform}
 
 .over{
-  font-family:var(--f-ui);font-size:10px;font-weight:400;
-  letter-spacing:.32em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 clamp(24px,4vh,38px);
+  font-size:11px;font-weight:700;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--pink);
+  margin:0 0 clamp(20px,3.6vh,34px);
 }
-.lede{font-size:clamp(17px,4.6vw,23px);line-height:1.5;color:var(--ink-2);margin:clamp(30px,5vh,44px) 0 0}
-.body{font-size:clamp(15px,4.1vw,19px);color:var(--ink-2);margin:clamp(22px,4vh,32px) 0 0;max-width:33ch}
-.body--wide{max-width:47ch}
+.lede{font-size:clamp(17px,4.6vw,22px);line-height:1.55;color:var(--ink-2);margin:clamp(26px,4.6vh,40px) 0 0}
+.body{font-size:clamp(15px,4.1vw,18px);color:var(--ink-2);margin:clamp(20px,3.6vh,30px) 0 0;max-width:36ch}
+.body--wide{max-width:48ch}
 
 .num{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-size:clamp(40px,11vw,84px);line-height:1;margin:0 0 clamp(14px,3vh,26px);
-  color:transparent;-webkit-text-stroke:1px rgba(42,21,32,.26);
+  font-family:var(--f-display);
+  font-size:clamp(44px,12vw,92px);line-height:1;margin:0 0 clamp(12px,2.6vh,24px);
+  color:transparent;-webkit-text-stroke:1.4px rgba(194,37,92,.55);
 }
 
 /* =====================================================================
-   1. HERO — two cities, one arc
+   TORAN — the marigold garland along the top
+   ===================================================================== */
+.toran{
+  position:absolute;top:0;left:0;right:0;height:24px;z-index:5;pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 0,var(--gold-2) 0 44%,transparent 48%) 0 0/32px 13px repeat-x,
+    radial-gradient(circle at 50% 0,var(--pink) 0 47%,transparent 51%) 16px 0/32px 21px repeat-x;
+}
+
+/* =====================================================================
+   1. HERO — the rakhi hangs from the garland
    ===================================================================== */
 .sec--hero{overflow:hidden}
-.arc{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:.85;pointer-events:none}
-.city{
-  position:absolute;z-index:3;display:flex;align-items:center;gap:8px;
-  font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);
+.hero__wrap{position:relative;z-index:2}
+
+.hang{
+  position:absolute;top:0;right:clamp(4px,8vw,150px);z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  transform-origin:50% 0;pointer-events:none;will-change:transform;
 }
-.city i{
-  width:6px;height:6px;border-radius:50%;background:var(--vermilion);
-  box-shadow:0 0 0 4px rgba(217,61,26,.16);flex:0 0 auto;
+.hang__thread{
+  width:2px;height:clamp(64px,15vh,150px);
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));
 }
-.city--mine{left:var(--pad);bottom:clamp(70px,10vh,110px)}
-.city--yours{right:calc(var(--pad) + var(--rail));top:clamp(70px,10vh,106px)}
+.hang img{
+  width:clamp(120px,32vw,290px);height:auto;margin-top:-4px;
+  filter:drop-shadow(0 16px 26px rgba(58,17,48,.2));
+}
+
 .hint{
   position:absolute;left:var(--pad);bottom:clamp(24px,4vh,38px);
   display:flex;align-items:center;gap:11px;
-  font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-3);
+  font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-3);
 }
-.hint i{display:block;width:38px;height:1px;background:var(--ink-3);transform-origin:left}
+.hint i{display:block;width:38px;height:2px;background:var(--pink);transform-origin:left;border-radius:2px}
 
 /* =====================================================================
    2. THE DISTANCE — pinned horizontal
    ===================================================================== */
-.sec--gap{padding:0;display:block;background:var(--paper-2)}
+.sec--gap{padding:0;display:block;background:var(--bg-2)}
 .hpin{position:relative;height:100svh;overflow:hidden;display:flex;align-items:center}
 .htrack{display:flex;align-items:center;will-change:transform}
 .hpanel{flex:0 0 auto;width:86vw;max-width:600px;padding:0 clamp(22px,6vw,60px)}
 .swipe{
-  position:absolute;left:var(--pad);top:clamp(70px,11vh,106px);margin:0;
-  font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-3);
+  position:absolute;left:var(--pad);top:clamp(66px,10vh,100px);margin:0;
+  font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--pink);
 }
 .hbar{
-  position:absolute;left:var(--pad);right:calc(var(--pad) + var(--rail));
-  bottom:clamp(38px,6vh,60px);height:1px;background:rgba(42,21,32,.14);
+  position:absolute;left:var(--pad);right:var(--pad);
+  bottom:clamp(36px,6vh,58px);height:2px;background:rgba(58,17,48,.1);border-radius:2px;
 }
-.hbar i{display:block;height:100%;width:0%;background:var(--vermilion)}
+.hbar i{display:block;height:100%;width:0%;background:var(--pink);border-radius:2px}
 
-.months{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2.4vw,16px)}
+.months{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2.4vw,14px)}
 .months span{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-size:clamp(17px,5vw,30px);text-align:center;
-  padding:clamp(9px,2.6vw,15px) 4px;color:var(--ink-3);opacity:.45;
-  border:1px solid rgba(42,21,32,.12);border-radius:2px;
+  font-family:var(--f-display);
+  font-size:clamp(16px,4.6vw,28px);text-align:center;
+  padding:clamp(10px,2.8vw,16px) 4px;color:var(--ink-3);opacity:.4;
+  background:var(--card);border-radius:10px;
+  box-shadow:0 2px 10px rgba(58,17,48,.05);
 }
 .cap{
   margin:clamp(18px,3vh,28px) 0 0;text-align:center;
-  font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);
+  font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);
 }
 .blame{display:grid;gap:16px}
-.blame__side{border-left:1px solid rgba(217,61,26,.4);padding-left:16px}
-.who{display:block;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
-.say{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-style:italic;font-size:clamp(20px,5.8vw,32px);line-height:1.15;
+.blame__side{
+  background:var(--card);border-radius:14px;
+  padding:clamp(14px,3.6vw,22px) clamp(16px,4vw,24px);
+  box-shadow:0 6px 22px rgba(58,17,48,.07);
 }
+.who{
+  display:block;font-size:9px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--pink);margin-bottom:6px;
+}
+.say{font-family:var(--f-display);font-size:clamp(19px,5.4vw,30px);line-height:1.15}
 
 /* =====================================================================
-   3. CHIPS
+   3. HOW HAVE YOU BEEN
    ===================================================================== */
-.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:clamp(26px,4vh,38px)}
+.how{display:grid;gap:clamp(26px,5vh,44px)}
+@media (min-width:900px){
+  .how{grid-template-columns:1.1fr 1fr;gap:70px;align-items:center}
+}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
 .chip{
-  padding:11px 19px;border-radius:2px;border:1px solid rgba(42,21,32,.2);
-  font-size:13px;color:var(--ink-2);
-  transition:background .35s var(--e-out),color .35s var(--e-out),border-color .35s var(--e-out);
+  padding:13px 21px;border-radius:999px;
+  background:var(--card);border:1px solid rgba(194,37,92,.26);
+  font-size:14px;font-weight:500;color:var(--ink-2);
+  box-shadow:0 3px 12px rgba(58,17,48,.06);
+  transition:background .35s var(--e-out),color .35s var(--e-out),
+             border-color .35s var(--e-out),transform .35s var(--e-out);
 }
-.chip:hover,.chip:focus-visible{border-color:var(--vermilion);color:var(--vermilion)}
-.chip.is-picked{background:var(--vermilion);border-color:var(--vermilion);color:var(--paper)}
+.chip:hover,.chip:focus-visible{border-color:var(--pink);color:var(--pink);transform:translateY(-2px)}
+.chip.is-picked{background:var(--pink);border-color:var(--pink);color:#fff}
 .reply{
-  min-height:2.4em;margin:clamp(24px,4vh,34px) 0 0;
-  font-family:var(--f-display);font-variation-settings:var(--wonk);font-style:italic;
-  font-size:clamp(21px,6vw,34px);line-height:1.2;color:var(--vermilion);
+  min-height:2.4em;margin:clamp(20px,3.6vh,30px) 0 0;
+  font-family:var(--f-hand);font-weight:700;
+  font-size:clamp(22px,6.2vw,34px);line-height:1.25;color:var(--pink);
 }
 
 /* =====================================================================
-   5. HAPPY RAKHI — the one bold, saturated beat
+   4. THE DATE
    ===================================================================== */
-.sec--rakhi{overflow:hidden;background:var(--vermilion);color:var(--paper)}
-.sec--rakhi .over{color:rgba(247,240,227,.62)}
-.sec--rakhi .gold{color:var(--marigold-lt)}
+.sec--turn{background:var(--bg-2)}
+
+/* =====================================================================
+   5. HAPPY RAKHI — the loud one
+   ===================================================================== */
+.sec--rakhi{
+  overflow:hidden;color:#fff;
+  background:linear-gradient(150deg,#d6336c 0%,#b01e57 100%);
+}
+.sec--rakhi .over{color:var(--gold-2)}
 .glow{
-  position:absolute;left:50%;top:46%;width:min(150vw,1000px);aspect-ratio:1;
+  position:absolute;left:50%;top:44%;width:min(150vw,1000px);aspect-ratio:1;
   transform:translate(-50%,-50%) scale(.4);
-  background:radial-gradient(circle,rgba(246,181,63,.5),transparent 64%);
+  background:radial-gradient(circle,rgba(239,185,63,.42),transparent 62%);
   pointer-events:none;z-index:0;
 }
 .sec--rakhi .wrap{position:relative;z-index:1}
 .forher{
-  font-family:var(--f-display);font-variation-settings:var(--wonk);font-style:italic;
-  font-size:clamp(19px,5.2vw,32px);line-height:1.28;color:var(--marigold-lt);
-  margin:clamp(26px,4vh,38px) 0 0;max-width:27ch;
+  font-family:var(--f-hand);font-weight:700;
+  font-size:clamp(20px,5.4vw,34px);line-height:1.3;color:var(--gold-2);
+  margin:clamp(24px,4vh,36px) 0 0;max-width:28ch;
 }
 .marquee{
   position:absolute;left:0;right:0;bottom:clamp(22px,4vh,42px);
-  overflow:hidden;opacity:.16;pointer-events:none;
+  overflow:hidden;opacity:.18;pointer-events:none;color:#fff;
 }
 .marquee__row{
   display:flex;gap:40px;white-space:nowrap;will-change:transform;
-  font-family:var(--f-display);font-variation-settings:var(--wonk);
-  font-size:clamp(38px,10vw,88px);line-height:1;
+  font-family:var(--f-display);font-size:clamp(38px,10vw,88px);line-height:1;
 }
 
 /* =====================================================================
@@ -268,45 +259,42 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sec--env{flex-direction:column;justify-content:center;align-items:stretch}
 .sec--env .wrap--tight{margin:0 auto}
 
-/* The bubbles get their OWN reserved row, so the roaming envelope
-   can never sit on top of the message. */
+/* the circle and its messages get a reserved row —
+   the roaming envelope can never cover what is being said. */
 .sayrow{
   position:relative;z-index:9;
-  width:100%;max-width:640px;margin:clamp(18px,3.4vh,32px) auto 0;
-  min-height:clamp(80px,12vh,104px);
+  width:100%;max-width:660px;margin:clamp(16px,3vh,30px) auto 0;
+  min-height:clamp(78px,11vh,102px);
   display:flex;align-items:flex-end;gap:12px;
 }
 .me{
   flex:0 0 auto;position:relative;
-  width:clamp(40px,12vw,56px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 34% 30%,var(--marigold-lt),var(--vermilion));
-  box-shadow:0 6px 18px rgba(217,61,26,.34);
+  width:clamp(42px,12vw,56px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,var(--gold-2),var(--pink) 72%);
+  box-shadow:0 6px 18px rgba(194,37,92,.36);
 }
 .me::after{
   content:"";position:absolute;inset:-7px;border-radius:50%;
-  border:1px solid rgba(217,61,26,.32);
+  border:1.5px solid rgba(194,37,92,.34);
 }
 .bubbles{
   flex:1 1 auto;display:flex;flex-direction:column;gap:7px;
   align-items:flex-start;justify-content:flex-end;min-height:100%;
 }
 .bubble{
-  position:relative;padding:11px 16px;border-radius:16px 16px 16px 4px;
-  background:var(--ink);color:var(--paper);
-  font-size:clamp(13px,3.7vw,15px);line-height:1.42;
-  box-shadow:0 8px 22px rgba(42,21,32,.22);
+  position:relative;padding:11px 17px;border-radius:18px 18px 18px 4px;
+  background:var(--pink);color:#fff;
+  font-size:clamp(13px,3.7vw,15px);font-weight:500;line-height:1.42;
+  box-shadow:0 8px 22px rgba(194,37,92,.3);
   max-width:100%;
 }
-.bubble--gold{background:var(--vermilion)}
+.bubble--gold{background:var(--gold-2);color:var(--ink)}
 
-/* full-bleed stage so the envelope has somewhere to actually run to */
+/* full-bleed stage so the envelope has real room to run */
 .stage{
   position:relative;
-  /* full-bleed by cancelling the section padding, so the envelope has the
-     whole screen width to run across. Percentage/transform tricks resolve
-     against the wrong box inside a flex item. */
   margin-left:calc(-1 * var(--pad));
-  margin-right:calc(-1 * (var(--pad) + var(--rail)));
+  margin-right:calc(-1 * var(--pad));
   min-height:clamp(290px,40svh,420px);
   display:flex;align-items:center;justify-content:center;
   touch-action:manipulation;
@@ -321,32 +309,32 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .env__shadow{
   position:absolute;left:6%;right:6%;bottom:-6%;height:18%;
-  background:radial-gradient(50% 50% at 50% 50%,rgba(42,21,32,.34),transparent 70%);
+  background:radial-gradient(50% 50% at 50% 50%,rgba(58,17,48,.3),transparent 70%);
   filter:blur(10px);
 }
 .env__body{position:absolute;inset:0;transform-style:preserve-3d}
 .env__rakhi{
   position:absolute;left:27%;top:20%;width:46%;height:auto;z-index:2;opacity:0;
-  filter:drop-shadow(0 6px 12px rgba(42,21,32,.32));pointer-events:none;
+  filter:drop-shadow(0 6px 12px rgba(58,17,48,.3));pointer-events:none;
 }
 .env__letter{
   position:absolute;left:5%;right:5%;top:8%;height:84%;
-  background:#fdfaf4;border-radius:2px;z-index:2;transform:translateY(6%);
-  box-shadow:0 1px 0 rgba(42,21,32,.08);
+  background:#fffdf9;border-radius:2px;z-index:2;transform:translateY(6%);
+  box-shadow:0 1px 0 rgba(58,17,48,.08);
 }
 .env__letter::before,.env__letter::after{
-  content:"";position:absolute;left:12%;right:12%;height:1px;background:rgba(42,21,32,.1);
+  content:"";position:absolute;left:12%;right:12%;height:1px;background:rgba(58,17,48,.1);
 }
 .env__letter::before{top:26%}
 .env__letter::after{top:44%}
 .env__front{
-  position:absolute;inset:0;z-index:3;border-radius:3px;
+  position:absolute;inset:0;z-index:3;border-radius:4px;
   background:url("../assets/img/paper-blush.webp") center/180% no-repeat;
   clip-path:polygon(0 0, 50% 46%, 100% 0, 100% 100%, 0 100%);
 }
 .env__front::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(255,255,255,.34),transparent 45%,rgba(42,21,32,.1));
+  background:linear-gradient(160deg,rgba(255,255,255,.4),rgba(255,214,228,.14) 45%,rgba(58,17,48,.1));
 }
 .env__flap{
   position:absolute;top:0;left:0;right:0;height:56%;z-index:5;
@@ -357,50 +345,50 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .env__flap::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(42,21,32,.12));
+  background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(58,17,48,.12));
 }
 .env__seal{
   position:absolute;left:50%;top:56%;
   width:clamp(44px,12vw,74px);height:auto;
   transform:translate(-50%,-50%);z-index:7;
-  filter:drop-shadow(0 3px 6px rgba(42,21,32,.4));pointer-events:none;
+  filter:drop-shadow(0 3px 6px rgba(58,17,48,.36));pointer-events:none;
 }
 .giveup{
   position:absolute;left:50%;bottom:2px;transform:translateX(-50%);
-  font-size:12px;letter-spacing:.06em;color:var(--ink-3);
-  border-bottom:1px solid rgba(42,21,32,.24);padding-bottom:3px;
+  font-size:12px;font-weight:500;color:var(--pink);
+  border-bottom:1.5px solid rgba(194,37,92,.4);padding-bottom:3px;
 }
 
 /* =====================================================================
    7. THE LETTER
    ===================================================================== */
 .sec--letter{
-  background:var(--paper-2);min-height:auto;justify-content:center;
-  padding:clamp(66px,11vh,124px) calc(var(--pad) + var(--rail)) clamp(86px,13vh,144px) var(--pad);
+  background:var(--bg-2);min-height:auto;justify-content:center;
+  padding:clamp(64px,10vh,120px) var(--pad) clamp(84px,12vh,140px);
 }
 .paper{
   position:relative;overflow:visible;width:min(100%,650px);
-  background:url("../assets/img/paper-white.webp") center/300%,#fdfaf6;
-  border-radius:3px;color:#2a1520;
-  box-shadow:0 34px 80px -26px rgba(42,21,32,.42);
+  background:url("../assets/img/paper-white.webp") center/300%,#fffdf9;
+  border-radius:6px;color:var(--ink);
+  box-shadow:0 34px 80px -26px rgba(58,17,48,.35);
   transform-origin:top center;
 }
 .paper__rakhi{
   position:absolute;right:clamp(6px,3vw,26px);top:clamp(-34px,-7vw,-16px);
   width:clamp(100px,28vw,172px);height:auto;transform:rotate(13deg);
-  filter:drop-shadow(0 10px 16px rgba(42,21,32,.3));pointer-events:none;z-index:3;
+  filter:drop-shadow(0 10px 16px rgba(58,17,48,.26));pointer-events:none;z-index:3;
 }
 .paper__inner{padding:clamp(28px,7vw,62px)}
 .paper__date{
   margin:0 0 clamp(22px,5vw,34px);
-  font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-3);
+  font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--pink);
 }
-.paper__body{font-family:var(--f-hand);font-size:clamp(20px,5.4vw,28px);line-height:1.7;color:#2a1520}
+.paper__body{font-family:var(--f-hand);font-size:clamp(20px,5.4vw,28px);line-height:1.7;color:var(--ink)}
 .paper__body p{margin:0 0 1em}
 .paper__body p:last-child{margin-bottom:0}
 .paper__sign{margin:clamp(32px,7vw,50px) 0 0;display:flex;flex-direction:column;gap:3px}
-.paper__signfrom{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
-.paper__signname{font-family:var(--f-hand);font-size:clamp(27px,7vw,38px);color:var(--vermilion)}
+.paper__signfrom{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
+.paper__signname{font-family:var(--f-hand);font-weight:700;font-size:clamp(27px,7vw,38px);color:var(--pink)}
 
 /* =====================================================================
    8. OUTRO
@@ -408,17 +396,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sec--outro{text-align:center;justify-content:center}
 .sec--outro .body{margin-left:auto;margin-right:auto}
 .replay{
-  margin-top:clamp(32px,5vh,46px);padding:13px 28px;border-radius:2px;
-  border:1px solid rgba(42,21,32,.24);
-  font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);
-  transition:background .4s var(--e-out),color .4s var(--e-out),border-color .4s var(--e-out);
+  margin-top:clamp(30px,5vh,44px);padding:15px 32px;border-radius:999px;
+  background:var(--pink);color:#fff;
+  font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 10px 26px rgba(194,37,92,.32);
+  transition:transform .35s var(--e-out),box-shadow .35s var(--e-out),background .35s var(--e-out);
 }
-.replay:hover{background:var(--vermilion);border-color:var(--vermilion);color:var(--paper)}
+.replay:hover{transform:translateY(-2px);background:var(--pink-2);box-shadow:0 14px 32px rgba(194,37,92,.4)}
 
 .reveal-up{opacity:0;transform:translateY(22px)}
 
 @media (min-width:760px){
-  .blame{grid-template-columns:1fr 1fr;gap:36px}
+  .blame{grid-template-columns:1fr 1fr;gap:28px}
   .months{grid-template-columns:repeat(4,1fr)}
   .hpanel{width:64vw}
 }
@@ -433,7 +422,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ---------- no-motion failsafe (GSAP unavailable) ---------- */
 html.no-motion{scroll-snap-type:none}
 html.no-motion .reveal-up{opacity:1;transform:none}
-html.no-motion .loader,html.no-motion .rail{display:none}
+html.no-motion .loader{display:none}
 html.no-motion .line .w{transform:none !important}
 html.no-motion .hpin{height:auto;display:block;overflow:visible}
 html.no-motion .htrack{flex-direction:column;transform:none !important}

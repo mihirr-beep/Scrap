@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f7f0e3">
+<meta name="theme-color" content="#fff5f7">
 <title>Happy Rakhi</title>
-<meta name="description" content="Different cities. Same sky. One thread.">
+<meta name="description" content="A rakhi that had to travel a long way.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Space+Grotesk:wght@300;400;500&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Karla:wght@400;500;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<noscript><style>.loader,.progress,.rail{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}html{scroll-snap-type:none!important}</style></noscript>
+<noscript><style>.loader,.progress{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}html{scroll-snap-type:none!important}</style></noscript>
 <script>
 /* Failsafe: if GSAP never loads (flaky mobile data, blocked CDN) the loader
    must not trap the page on a blank screen. main.js clears this on success. */
@@ -36,55 +36,38 @@ window.__failsafe = setTimeout(function () {
 <!-- ============ PRELOADER ============ -->
 <div class="loader" id="loader">
   <div class="loader__inner">
-    <span class="loader__label">spinning a thread</span>
+    <span class="loader__label">tying the first knot</span>
     <span class="loader__count" id="loaderCount">0</span>
   </div>
   <svg class="loader__spin" viewBox="0 0 120 120" aria-hidden="true">
     <circle id="loaderRing" cx="60" cy="60" r="52" fill="none"
-            stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/>
+            stroke="url(#lg)" stroke-width="2.5" stroke-linecap="round"/>
     <defs>
       <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#f5a524"/><stop offset="100%" stop-color="#e2452f"/>
+        <stop offset="0%" stop-color="#c2255c"/><stop offset="100%" stop-color="#efb93f"/>
       </linearGradient>
     </defs>
   </svg>
 </div>
 
-<div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-
-<!-- ============ KNOT RAIL — the thread is the navigation ============ -->
-<nav class="rail" id="rail" aria-label="Sections">
-  <span class="rail__line" aria-hidden="true"><i id="railFill"></i></span>
-  <ul class="rail__list" id="railList"></ul>
-</nav>
 
 <main id="main">
 
-  <!-- ============ 1. SAME SKY ============ -->
-  <section class="sec sec--hero" id="hero" data-knot="Same sky">
-    <svg class="arc" id="arc" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-      <path id="arcPath" fill="none" stroke="url(#ag)" stroke-width="1.4" stroke-linecap="round"
-            d="M42,238 C130,96 270,96 358,52"/>
-      <defs>
-        <linearGradient id="ag" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0%" stop-color="#f5a524"/>
-          <stop offset="55%" stop-color="#e2452f"/>
-          <stop offset="100%" stop-color="#f5a524"/>
-        </linearGradient>
-      </defs>
-    </svg>
+  <!-- ============ 1. HELLO — the rakhi hangs from the garland ============ -->
+  <section class="sec sec--hero" id="hero">
+    <div class="toran" aria-hidden="true"></div>
 
-    <span class="city city--mine"  id="cityMine"><i></i><em data-fill="myCity">here</em></span>
-    <span class="city city--yours" id="cityYours"><i></i><em data-fill="herCity">there</em></span>
+    <div class="hang" id="hang" aria-hidden="true">
+      <span class="hang__thread"></span>
+      <img src="assets/img/rakhi-tight.webp" alt="" width="312" height="296">
+    </div>
 
-    <div class="wrap">
-      <p class="over reveal-up">
-        <span data-fill="distance">a long way</span> apart &nbsp;·&nbsp; same sky
-      </p>
+    <div class="wrap hero__wrap">
+      <p class="over reveal-up">raksha bandhan &middot; <span data-fill="year">2026</span></p>
       <h1 class="giant">
         <span class="line"><span class="w">Hello,</span></span>
-        <span class="line"><span class="w gold" data-fill="name">Didi</span><span class="w">.</span></span>
+        <span class="line"><span class="w pink" data-fill="name">Didi</span><span class="w">.</span></span>
       </h1>
       <p class="lede reveal-up">
         Long time, no see.<br>
@@ -96,7 +79,7 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 2. THE DISTANCE — horizontal ============ -->
-  <section class="sec sec--gap" id="gap" data-knot="The distance" data-nosnap>
+  <section class="sec sec--gap" id="gap" data-nosnap>
     <div class="hpin" id="hpin">
       <p class="swipe" aria-hidden="true">keep scrolling &rarr;</p>
       <div class="hbar" aria-hidden="true"><i id="hbarFill"></i></div>
@@ -104,7 +87,7 @@ window.__failsafe = setTimeout(function () {
 
         <article class="hpanel">
           <p class="num">01</p>
-          <h2 class="big">Somewhere between<br>your work <span class="gold">and mine</span>&hellip;</h2>
+          <h2 class="big">Somewhere between<br>your work <span class="pink">and mine</span>&hellip;</h2>
           <p class="body">the days just started stacking up.</p>
         </article>
 
@@ -119,7 +102,7 @@ window.__failsafe = setTimeout(function () {
 
         <article class="hpanel">
           <p class="num">02</p>
-          <h2 class="big">And neither of us<br><em class="gold">picked up the phone.</em></h2>
+          <h2 class="big">And neither of us<br><span class="pink">picked up the phone.</span></h2>
         </article>
 
         <article class="hpanel">
@@ -136,27 +119,31 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 3. HOW HAVE YOU BEEN ============ -->
-  <section class="sec sec--how" id="how" data-knot="How are you">
-    <div class="wrap">
-      <h2 class="big reveal-up">So&hellip; how<br>have <span class="gold">you</span> been?</h2>
-      <p class="body reveal-up">Go on. Tap one. I&rsquo;m actually asking.</p>
-      <div class="chips" id="chips">
-        <button class="chip" data-reply="Liar. But I&rsquo;m glad.">good, honestly</button>
-        <button class="chip" data-reply="Yeah. That tracks. Same here.">work is eating me alive</button>
-        <button class="chip" data-reply="&hellip;that&rsquo;s my line. Don&rsquo;t turn it around on me.">are you eating properly?</button>
-        <button class="chip" data-reply="I know. Same. Obviously.">missed you, idiot</button>
+  <section class="sec sec--how" id="how">
+    <div class="wrap how">
+      <div>
+        <h2 class="big reveal-up">So&hellip; how<br>have <span class="pink">you</span> been?</h2>
+        <p class="body reveal-up">Go on. Tap one. I&rsquo;m actually asking.</p>
       </div>
-      <p class="reply" id="chipReply" aria-live="polite"></p>
+      <div>
+        <div class="chips" id="chips">
+          <button class="chip" data-reply="Liar. But I&rsquo;m glad.">good, honestly</button>
+          <button class="chip" data-reply="Yeah. That tracks. Same here.">work is eating me alive</button>
+          <button class="chip" data-reply="&hellip;that&rsquo;s my line. Don&rsquo;t turn it around on me.">are you eating properly?</button>
+          <button class="chip" data-reply="I know. Same. Obviously.">missed you, idiot</button>
+        </div>
+        <p class="reply" id="chipReply" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
   <!-- ============ 4. THE DATE ============ -->
-  <section class="sec sec--turn" id="turn" data-knot="The date">
+  <section class="sec sec--turn" id="turn">
     <div class="wrap">
       <h2 class="big lines">
         <span class="line"><span class="w">But then</span></span>
         <span class="line"><span class="w">I looked</span></span>
-        <span class="line"><span class="w gold">at the date.</span></span>
+        <span class="line"><span class="w pink">at the date.</span></span>
       </h2>
       <p class="body body--wide reveal-up">
         It&rsquo;s Rakhi. And I&rsquo;m not there &mdash; again.<br>
@@ -167,7 +154,7 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 5. HAPPY RAKHI ============ -->
-  <section class="sec sec--rakhi" id="rakhiSec" data-knot="Happy Rakhi">
+  <section class="sec sec--rakhi" id="rakhiSec">
     <div class="glow" aria-hidden="true"></div>
     <div class="wrap">
       <p class="over reveal-up">so, from much too far away &mdash;</p>
@@ -183,7 +170,7 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 6. THE ENVELOPE ============ -->
-  <section class="sec sec--env" id="envSec" data-knot="One more thing">
+  <section class="sec sec--env" id="envSec">
     <div class="wrap wrap--tight">
       <h2 class="big reveal-up">There&rsquo;s one<br>more thing.</h2>
       <p class="body reveal-up" id="envHint">Go ahead. Tap it.</p>
@@ -213,7 +200,7 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 7. THE LETTER ============ -->
-  <section class="sec sec--letter" id="letterSec" data-knot="The letter" data-nosnap hidden>
+  <section class="sec sec--letter" id="letterSec" data-nosnap hidden>
     <div class="paper" id="paper">
       <img class="paper__rakhi" src="assets/img/rakhi.webp" alt="" width="620" height="614">
       <div class="paper__inner">
@@ -236,9 +223,9 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 8. OUTRO ============ -->
-  <footer class="sec sec--outro" id="outro" data-knot="Call me" hidden>
+  <footer class="sec sec--outro" id="outro" hidden>
     <div class="wrap">
-      <h2 class="big reveal-up">Now actually<br><span class="gold">call me back.</span></h2>
+      <h2 class="big reveal-up">Now actually<br><span class="pink">call me back.</span></h2>
       <p class="body reveal-up">
         I&rsquo;m serious. The phone works both ways.<br>
         And keep the thread &mdash; I&rsquo;ll come collect it in person.
