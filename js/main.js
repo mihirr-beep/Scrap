@@ -12,11 +12,47 @@ const CONFIG = {
   occasion: "to the one who has had my back since before either of us had a choice",
   date:     "",                   // "" = today's date, or write your own
 
-  // The teasing bubbles while the envelope dodges. The last one always opens it.
-  dodges: [
-    "nope. not yet.",
-    "you were always this impatient.",
-    "okay okay okay — just open it."
+  // The quiz guarding the envelope. It opens at 3 correct answers,
+  // or after all 5 questions regardless. Q3 is rigged: the rating is 5.
+  quiz: [
+    {
+      q: "First — what did we actually DO on Raksha Bandhan?",
+      a: ["Tie the rakhi, obviously", "I don't know", "Some grand family ritual"],
+      correct: 1,
+      right: "Exactly. Nobody remembers. That's our tradition.",
+      wrong: "Don't lie. Neither of us knows."
+    },
+    {
+      q: "The smartwatch you gifted me — am I using it?",
+      a: ["Yes, every day", "No", "What smartwatch?"],
+      correct: 1,
+      right: "Correct. It sleeps in a drawer. Peacefully.",
+      wrong: "Cute of you to think so. Drawer. Since day one."
+    },
+    {
+      special: "rating",
+      q: "What rating does this website get?",
+      a: ["3 stars", "4 stars", "5 stars"],
+      correct: 2,
+      right: "Correct. Obviously.",
+      insist: "Are you SURE you don't want to select 5? ⭐",
+      thanks: "Thank you for the 5-star rating. ❤️",
+      fine:   "Wise choice."
+    },
+    {
+      q: "Who is the favourite child at home?",
+      a: ["Me, clearly", "My brother"],
+      correct: 0,
+      right: "Correct. I've made peace with it.",
+      wrong: "Liar. We both know it's you."
+    },
+    {
+      q: "How many times did we say “I'll call this weekend” this year?",
+      a: ["Twice", "Never", "Lost count"],
+      correct: 2,
+      right: "And yet. Here we are.",
+      wrong: "“Lost count.” The answer was “lost count.”"
+    }
   ]
 };
 /* =====================================================================
@@ -157,11 +193,21 @@ function horizontalGap() {
 
   const maxScroll = () => Math.max(1, sc.scrollWidth - sc.clientWidth);
 
+  // light the months up to NOW (August on Rakhi) — the year so far,
+  // gone by without a call. SEP–DEC stay dim: still time to fix it.
+  const litCount = Math.min(12, new Date().getMonth() + 1);
+  let monthsDone = false;
+  function lightMonths() {
+    if (monthsDone) return;
+    monthsDone = true;
+    months.slice(0, litCount).forEach((m, i) =>
+      setTimeout(() => m.classList.add("lit"), 260 + i * 170));
+  }
+
   function update() {
     const p = sc.scrollLeft / maxScroll();
     bar.style.width = (p * 100).toFixed(1) + "%";
-    const lit = Math.round(p * months.length);
-    months.forEach((m, i) => m.classList.toggle("lit", i < lit));
+    if (sc.scrollLeft >= sc.clientWidth * .5) lightMonths();   // months panel arriving
     prev.disabled = sc.scrollLeft <= 2;
     next.disabled = sc.scrollLeft >= maxScroll() - 2;
     if (sc.scrollLeft > 40) hint.classList.add("is-gone");
@@ -311,7 +357,8 @@ function envelope() {
   const giveup  = $("#giveup");
   const hint    = $("#envHint");
 
-  let dodges = 0, opened = false, busy = false;
+  const quizBox = $("#quiz");
+  let qi = 0, correct = 0, opened = false, quizStarted = false, resolving = false;
 
   gsap.set(rakhi, { scale: .82, y: 0 });
 
@@ -335,8 +382,9 @@ function envelope() {
                 duration: .9, ease: "elastic.out(1,.45)" });
   }
 
-  /* a message, stacked in its own reserved row — never covered */
-  function bubble(text, hot) {
+  /* a message, stacked in its own reserved row — never covered.
+     stay:true = a question that waits to be answered (no auto-fade). */
+  function bubble(text, hot, stay) {
     const b = document.createElement("div");
     b.className = "bubble" + (hot ? " bubble--gold" : "");
     b.textContent = text;
@@ -349,10 +397,12 @@ function envelope() {
       { opacity: 0, scale: .8, x: -14 },
       { opacity: 1, scale: 1, x: 0, duration: .5, ease: "back.out(2.4)" });
 
-    gsap.to(b, {
-      opacity: 0, x: -10, duration: .5, delay: 4.2, ease: "power2.in",
-      onComplete: () => b.remove()
-    });
+    if (!stay) {
+      gsap.to(b, {
+        opacity: 0, x: -10, duration: .5, delay: 4.2, ease: "power2.in",
+        onComplete: () => b.remove()
+      });
+    }
   }
 
   /* dodge — the stage is full-bleed, so it has real room to run */
@@ -416,25 +466,89 @@ function envelope() {
     }, 450);
   }
 
-  function poke() {
-    if (opened || busy) return;
+  /* ------------- THE QUIZ — she opens at 3 correct, or after all 5 ------------- */
 
-    if (dodges < CONFIG.dodges.length) {
-      busy = true;
-      bubble(CONFIG.dodges[dodges], dodges === CONFIG.dodges.length - 1);
-      dodge();
-      dodges++;
-      if (dodges >= 2) giveup.hidden = false;
-      setTimeout(() => { busy = false; }, 430);   // a fast double-tap shouldn't burn two
-      return;
-    }
-    open();
+  function hop() {
+    if (REDUCED) return;
+    gsap.to(env, { y: "-=16", duration: .18, yoyo: true, repeat: 1, ease: "power2.out", overwrite: "auto" });
   }
 
-  env.addEventListener("click", poke);
+  function renderChoices(labels, cb) {
+    quizBox.innerHTML = "";
+    labels.forEach((label, i) => {
+      const btn = document.createElement("button");
+      btn.className = "chip";
+      btn.textContent = label;
+      btn.addEventListener("click", () => { if (!resolving) cb(i); });
+      quizBox.appendChild(btn);
+    });
+    gsap.fromTo(quizBox.children,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: .45, stagger: .07, ease: "expo.out" });
+  }
+
+  function nextQuestion(delay) {
+    qi++;
+    quizBox.innerHTML = "";
+    setTimeout(() => { resolving = false; ask(); }, delay);
+  }
+
+  function ask() {
+    if (opened) return;
+    if (correct >= 3) { finish(true); return; }
+    if (qi >= CONFIG.quiz.length) { finish(false); return; }
+    if (qi >= 3) giveup.hidden = false;          // escape hatch for the impatient
+    const q = CONFIG.quiz[qi];
+    bubble(q.q, false, true);
+    renderChoices(q.a, i => answer(q, i));
+  }
+
+  function answer(q, i) {
+    resolving = true;
+
+    if (q.special === "rating" && i !== q.correct) {
+      // the rating is 5. this is not negotiable.
+      bubble(q.insist, false, true);
+      renderChoices(["Fine, 5 stars", "No"], sel => {
+        resolving = true;
+        correct++;                               // rigged either way
+        bubble(sel === 1 ? q.thanks : q.fine, true);
+        hop();
+        nextQuestion(1900);
+      });
+      resolving = false;                         // the insist choices must be live
+      return;
+    }
+
+    const ok = i === q.correct;
+    if (ok) { correct++; bubble(q.right, true); hop(); }
+    else    { bubble(q.wrong); dodge(); }
+    nextQuestion(1900);
+  }
+
+  function finish(passed) {
+    quizBox.innerHTML = "";
+    bubble(passed
+      ? "Fine. " + correct + " right. She approves — opening it."
+      : "That was genuinely bad. Opening it anyway — it's Rakhi.", true);
+    setTimeout(open, 1300);
+  }
+
+  // start once, when this beat scrolls into view
+  ScrollTrigger.create({
+    trigger: "#envSec", start: "top 60%", once: true,
+    onEnter: () => { if (!quizStarted) { quizStarted = true; setTimeout(ask, 700); } }
+  });
+
+  // poking the envelope early just makes it run
+  env.addEventListener("click", () => {
+    if (opened) return;
+    bubble("Answer her first.");
+    dodge();
+  });
   giveup.addEventListener("click", () => { if (!opened) open(); });
   env.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke(); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.target.click(); }
   });
 
   window.addEventListener("resize", () => {

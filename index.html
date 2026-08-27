@@ -177,7 +177,7 @@ window.__failsafe = setTimeout(function () {
   <section class="sec sec--env" id="envSec">
     <div class="wrap wrap--tight">
       <h2 class="big reveal-up">There&rsquo;s one<br>more thing.</h2>
-      <p class="body reveal-up" id="envHint">Go ahead. Tap it.</p>
+      <p class="body reveal-up" id="envHint">She&rsquo;s guarding it. Answer her questions.</p>
     </div>
 
     <!-- reserved row: the circle and its messages. The envelope roams the
@@ -186,6 +186,9 @@ window.__failsafe = setTimeout(function () {
       <span class="me" id="me" aria-hidden="true"></span>
       <div class="bubbles" id="bubbles" aria-live="polite"></div>
     </div>
+
+    <!-- quiz answers appear here, never under the envelope -->
+    <div class="quiz" id="quiz"></div>
 
     <div class="stage" id="stage">
       <button class="env" id="env" aria-label="Open the letter">
@@ -213,14 +216,17 @@ window.__failsafe = setTimeout(function () {
         <!-- the letter — written by the sender, not by a template -->
         <div class="paper__body" id="paperBody">
           <p>Yo,</p>
-          <p>It&rsquo;s been a very long time since we last interacted with each other. I know &mdash; we were too busy with our work.</p>
+          <p class="paper__big">Happy Raksha Bandhan.</p>
+          <p>It&rsquo;s been a very long time since we last interacted with each other (in any way). I know &mdash; we were too busy with our work.</p>
           <p>I had trapped myself with so much work that I even forgot to wish you on your birthday. Never mind.</p>
           <p>I will just write something in short:</p>
-          <p class="paper__big">Happy Raksha Bandhan.</p>
-          <p>&mdash; In past, you were just working and working all day [without attending college most of the time].</p>
-          <p>&mdash; So I hope you are having a good time there (now).</p>
-          <p>&mdash; Khali time pas karu 6u, atlu dhyanthi na vanchis&hellip; kasu emotional nathi lakhto.</p>
-          <p>I wanted to give you a gift, but I don&rsquo;t actually know where you live either. So I&rsquo;m sending one via this site &mdash; at the last, there is one box. That&rsquo;s your gift.</p>
+          <p>&mdash; So I hope you are having a good time there (now) [as there is no college now].</p>
+          <p>&mdash; How are your weekends going? (Mine are just: sleep all day, play something on the PC on repeat, not going outside due to the heat.)</p>
+          <p>&mdash; I am not writing any fancy or emotional things here, so don&rsquo;t read it with concentration.</p>
+          <p>&mdash; It&rsquo;s just that I had free time (no work in office), so I made all of this which I didn&rsquo;t need to make.</p>
+          <p>I wanted to give you a gift, but I don&rsquo;t actually know what to gift &mdash; and also where you live. So I&rsquo;m sending a gift via this site (Why? Cuz why not).</p>
+          <p>At the last, there is one box &mdash; yeah, that&rsquo;s your gift.</p>
+          <p class="paper__quiet">Sometimes I think that I don&rsquo;t talk to you much, or never open up to you as I should have. Let me know what you feel about it.</p>
         </div>
 
         <p class="paper__sign">
