@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2ece6">
+<title>For You</title>
+<meta name="description" content="A small something, made by hand.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<noscript><style>.loader,.progress{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}</style></noscript>
+<script>
+/* Failsafe: if GSAP never loads (flaky mobile data, blocked CDN) the loader
+   must not trap the page on a blank screen. main.js clears this on success. */
+window.__failsafe = setTimeout(function () {
+  document.documentElement.classList.add("no-motion");
+  var l = document.getElementById("loader"); if (l) l.remove();
+  document.body.classList.remove("is-locked");
+  ["letterSec", "outro"].forEach(function (id) {
+    var e = document.getElementById(id); if (e) e.hidden = false;
+  });
+}, 6000);
+</script>
+</head>
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="loader" id="loader">
+  <div class="loader__inner">
+    <span class="loader__label">a small something</span>
+    <span class="loader__count" id="loaderCount">0</span>
+  </div>
+  <div class="loader__bar"><i id="loaderBar"></i></div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<main id="main">
+
+  <!-- ============ 1. GREETING ============ -->
+  <section class="sec sec--hero" id="hero">
+    <div class="wrap">
+      <p class="eyebrow reveal-up">made by hand &middot; not by a template</p>
+      <h1 class="hero__title">
+        <span class="line"><span class="w">Hello,</span></span>
+        <span class="line"><span class="w em" data-fill="name">Friend</span><span class="w">.</span></span>
+      </h1>
+      <p class="hero__sub reveal-up">
+        Long time, no see.<br>
+        Longer time, no call.
+      </p>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <span>scroll</span>
+      <i class="scroll-hint__line"></i>
+    </div>
+  </section>
+
+  <!-- ============ 2. THE GAP &mdash; horizontal scroll ============ -->
+  <section class="sec sec--gap" id="gap">
+    <div class="hpin" id="hpin">
+      <div class="htrack" id="htrack">
+
+        <article class="hpanel hpanel--intro">
+          <p class="kicker">chapter one</p>
+          <h2 class="h2">Somewhere along<br>the way&hellip;</h2>
+          <p class="p">the days just started<br>stacking up.</p>
+        </article>
+
+        <article class="hpanel hpanel--months">
+          <div class="months" id="months">
+            <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span>
+            <span>MAY</span><span>JUN</span><span>JUL</span><span>AUG</span>
+            <span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
+          </div>
+          <p class="months__cap">months, quietly going by</p>
+        </article>
+
+        <article class="hpanel hpanel--quote">
+          <h2 class="h2 h2--big">
+            And neither of us<br>
+            <em>picked up the phone.</em>
+          </h2>
+        </article>
+
+        <article class="hpanel hpanel--blame">
+          <div class="blame">
+            <div class="blame__side">
+              <span class="blame__who">you</span>
+              <span class="blame__say">&ldquo;I&rsquo;ll message tomorrow.&rdquo;</span>
+            </div>
+            <div class="blame__side">
+              <span class="blame__who">me</span>
+              <span class="blame__say">&ldquo;I&rsquo;ll message tomorrow.&rdquo;</span>
+            </div>
+          </div>
+          <p class="p p--center">Both of us. Every single tomorrow.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. HOW HAVE YOU BEEN ============ -->
+  <section class="sec sec--how" id="how">
+    <div class="wrap">
+      <p class="kicker reveal-up">chapter two</p>
+      <h2 class="h2 reveal-up">So&hellip; how<br>have you been?</h2>
+      <p class="p reveal-up">Go on. Tap one. I&rsquo;m actually asking.</p>
+      <div class="chips" id="chips">
+        <button class="chip" data-reply="Liar. But I&rsquo;m glad.">good, honestly</button>
+        <button class="chip" data-reply="Yeah. That tracks. Me too.">busy. so busy</button>
+        <button class="chip" data-reply="Then this page arrived at the right time.">a bit tired</button>
+        <button class="chip" data-reply="I know. That&rsquo;s kind of why I built this.">missed you, idiot</button>
+      </div>
+      <p class="chip-reply" id="chipReply" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ============ 4. THE TURN ============ -->
+  <section class="sec sec--heard" id="heard">
+    <div class="wrap">
+      <h2 class="h2 h2--reveal">
+        <span class="line"><span class="w">But then</span></span>
+        <span class="line"><span class="w">I heard</span></span>
+        <span class="line"><span class="w em">the news.</span></span>
+      </h2>
+      <p class="p p--wide reveal-up">
+        And I didn&rsquo;t message. I didn&rsquo;t call.<br>
+        I went and built you a whole website instead,<br>
+        because apparently that&rsquo;s easier for me.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 5. CONGRATULATIONS ============ -->
+  <section class="sec sec--congrats" id="congrats">
+    <div class="burst" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="kicker light reveal-up">and so, with feeling &mdash;</p>
+      <h2 class="mega" id="mega" aria-label="Congratulations">
+        <span>C</span><span>o</span><span>n</span><span>g</span><span>r</span><span>a</span><span>t</span><span>u</span><span>l</span><span>a</span><span>t</span><span>i</span><span>o</span><span>n</span><span>s</span>
+      </h2>
+      <!-- EDIT ME: what you are congratulating them for -->
+      <p class="congrats__for reveal-up" data-fill="occasion">on the thing you worked so hard for</p>
+      <p class="p p--light reveal-up">
+        I always knew. That&rsquo;s not flattery &mdash; ask anyone.
+      </p>
+    </div>
+    <div class="marquee" aria-hidden="true"><div class="marquee__row" id="marqueeRow"></div></div>
+  </section>
+
+  <!-- ============ 6. THE ENVELOPE ============ -->
+  <section class="sec sec--env" id="envSec">
+    <div class="wrap">
+      <p class="kicker reveal-up">chapter three</p>
+      <h2 class="h2 reveal-up">There&rsquo;s one<br>more thing.</h2>
+      <p class="p reveal-up" id="envHint">Go ahead. Tap it.</p>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="bubbles" id="bubbles" aria-live="polite"></div>
+
+      <button class="env" id="env" aria-label="Open the letter">
+        <span class="env__shadow"></span>
+        <span class="env__body">
+          <span class="env__letter" id="envLetter"></span>
+          <span class="env__front"></span>
+          <span class="env__flap" id="envFlap"></span>
+          <img class="env__seal" id="envSeal" src="assets/img/seal.png" alt="" width="340" height="340">
+        </span>
+      </button>
+
+      <button class="giveup" id="giveup" hidden>just open it already &rarr;</button>
+    </div>
+  </section>
+
+  <!-- ============ 7. THE LETTER ============ -->
+  <section class="sec sec--letter" id="letterSec" hidden>
+    <div class="paper" id="paper">
+      <div class="paper__inner">
+        <p class="paper__date" data-fill="date">&mdash;</p>
+
+        <!-- ===== EDIT ME &mdash; WRITE THIS YOURSELF. Keep it messy and real. ===== -->
+        <div class="paper__body" id="paperBody">
+          <p>Dear <span data-fill="name">Friend</span>,</p>
+          <p>[ This is your part. Don&rsquo;t let me write it &mdash; write it badly, in your own words, at 1am. That&rsquo;s the whole point of it being handwritten. ]</p>
+          <p>[ Say the thing you&rsquo;d say if you finally picked up the phone. ]</p>
+        </div>
+        <!-- ===== END EDIT ===== -->
+
+        <p class="paper__sign">
+          <span class="paper__signfrom">always in your corner,</span>
+          <span class="paper__signname" data-fill="from">Me</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. OUTRO ============ -->
+  <footer class="sec sec--outro" id="outro" hidden>
+    <div class="wrap">
+      <h2 class="h2 h2--out reveal-up">Now actually<br>call me back.</h2>
+      <p class="p reveal-up">I&rsquo;m serious. The phone works both ways.</p>
+      <button class="replay" id="replay">read it again</button>
+    </div>
+  </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
