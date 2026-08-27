@@ -142,34 +142,81 @@ function reveals() {
 }
 
 /* ---------------------------------------------------------------------
-   the distance — pinned horizontal scroll
+   the distance — a native sideways carousel.
+   Swipe on a phone; on desktop the wheel walks it one panel at a time
+   until it runs out, then hands the gesture back to the page.
    ------------------------------------------------------------------- */
 function horizontalGap() {
-  const track = $("#htrack");
-  const sec   = $("#gap");
-  if (!track) return;
+  const sc     = $("#hscroll");
+  const bar    = $("#hbarFill");
+  const hint   = $("#swipeHint");
+  const prev   = $("#hPrev");
+  const next   = $("#hNext");
+  const months = $$("#months span");
+  if (!sc) return;
 
-  const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
+  const maxScroll = () => Math.max(1, sc.scrollWidth - sc.clientWidth);
 
-  const st = {
-    trigger: sec, start: "top top",
-    end: () => "+=" + dist(), scrub: 1, invalidateOnRefresh: true
+  function update() {
+    const p = sc.scrollLeft / maxScroll();
+    bar.style.width = (p * 100).toFixed(1) + "%";
+    const lit = Math.round(p * months.length);
+    months.forEach((m, i) => m.classList.toggle("lit", i < lit));
+    prev.disabled = sc.scrollLeft <= 2;
+    next.disabled = sc.scrollLeft >= maxScroll() - 2;
+    if (sc.scrollLeft > 40) hint.classList.add("is-gone");
+  }
+  sc.addEventListener("scroll", update, { passive: true });
+  update();
+
+  const go = dir => sc.scrollBy({ left: dir * sc.clientWidth, behavior: "smooth" });
+  prev.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+
+  // desktop wheel: one tick = one panel, released at the edges so the
+  // page's own section snap takes over
+  let lock = false;
+  sc.addEventListener("wheel", e => {
+    const fwd = e.deltaY > 0;
+    const atEdge = fwd ? sc.scrollLeft >= maxScroll() - 2 : sc.scrollLeft <= 2;
+    if (atEdge || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+    e.preventDefault();
+    if (lock) return;
+    lock = true;
+    setTimeout(() => { lock = false; }, 480);
+    go(fwd ? 1 : -1);
+  }, { passive: false });
+
+  return go;   // keyboard navigation reuses this
+}
+
+/* ---------------------------------------------------------------------
+   keyboard — arrows move one beat (or one panel, inside the carousel)
+   ------------------------------------------------------------------- */
+function keys(goPanel) {
+  const gap = $("#gap");
+
+  const gapInView = () => {
+    const r = gap.getBoundingClientRect();
+    return r.top > -innerHeight * .4 && r.top < innerHeight * .4;
   };
 
-  gsap.to(track, {
-    x: () => -dist(), ease: "none",
-    scrollTrigger: {
-      trigger: sec, start: "top top",
-      end: () => "+=" + (dist() + window.innerHeight * .4),
-      pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true
-    }
-  });
+  window.addEventListener("keydown", e => {
+    if (e.target.closest("input,textarea")) return;
 
-  gsap.to("#hbarFill",    { width: "100%", ease: "none", scrollTrigger: st });
-  gsap.to("#months span", { opacity: 1, duration: .5, stagger: .12, ease: "none", scrollTrigger: st });
-  gsap.to(".swipe", {
-    opacity: 0, ease: "none",
-    scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + dist() * .3, scrub: 1 }
+    if (e.key === "ArrowRight" && gapInView()) { e.preventDefault(); goPanel(1); return; }
+    if (e.key === "ArrowLeft"  && gapInView()) { e.preventDefault(); goPanel(-1); return; }
+
+    const dir = (e.key === "ArrowDown" || e.key === "PageDown") ? 1
+              : (e.key === "ArrowUp"   || e.key === "PageUp")   ? -1 : 0;
+    if (!dir) return;
+    e.preventDefault();
+
+    const secs = $$("main > .sec:not([hidden])");
+    const cur = secs.reduce((best, s) =>
+      Math.abs(s.getBoundingClientRect().top) < Math.abs(best.getBoundingClientRect().top) ? s : best);
+    const target = secs[secs.indexOf(cur) + dir];
+    if (target) target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
   });
 }
 
@@ -235,9 +282,19 @@ function envelope() {
     ease: "sine.inOut", repeat: -1, yoyo: true
   });
 
-  // the circle breathes so it reads as someone waiting
+  // the circle is a character, not a sticker: it bobs while it waits…
+  // (idle owns y; chase owns x/rotation/scaleX/scaleY — no overwrite fights)
   if (!REDUCED) {
-    gsap.to(me, { scale: 1.07, duration: 1.9, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    gsap.to(me, { y: -7, duration: 1.7, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  }
+
+  /* …and lunges after the envelope whenever it bolts */
+  function chase(dir) {
+    gsap.timeline()
+      .to(me, { x: dir * 26, rotation: dir * 14, scaleX: 1.18, scaleY: .85,
+                duration: .3, ease: "power2.out", overwrite: "auto" })
+      .to(me, { x: 0, rotation: 0, scaleX: 1, scaleY: 1,
+                duration: .9, ease: "elastic.out(1,.45)" });
   }
 
   /* a message, stacked in its own reserved row — never covered */
@@ -253,7 +310,6 @@ function envelope() {
     gsap.fromTo(b,
       { opacity: 0, scale: .8, x: -14 },
       { opacity: 1, scale: 1, x: 0, duration: .5, ease: "back.out(2.4)" });
-    gsap.fromTo(me, { scale: 1.16 }, { scale: 1, duration: .6, ease: "elastic.out(1,.5)" });
 
     gsap.to(b, {
       opacity: 0, x: -10, duration: .5, delay: 4.2, ease: "power2.in",
@@ -277,6 +333,7 @@ function envelope() {
       rotation: gsap.utils.random(-15, 15),
       duration: .85, ease: "elastic.out(1, 0.5)", overwrite: "auto"
     });
+    chase(dir);                                         // the circle goes after it
   }
 
   /* the payoff */
@@ -365,7 +422,7 @@ function chrome() {
    ------------------------------------------------------------------- */
 fillContent();
 reveals();
-horizontalGap();
+keys(horizontalGap() || (() => {}));
 chips();
 celebrate();
 envelope();

@@ -20,8 +20,11 @@ Rozha One (Indian Type Foundry) over Karla, with Kalam for the handwriting.
 A toran garland runs along the top of the hero and the real rakhi hangs from
 it on a gold thread, swinging gently.
 
-Eight beats, one per screen. Every section is exactly one viewport tall and the
-scroll snaps to it, so you never land halfway between two of them.
+Eight beats, one per screen. Section snapping is mandatory with
+`scroll-snap-stop: always`: a flick moves exactly one story beat, and you can
+never stop between two. The distance chapter is a native sideways carousel
+inside its screen — swipe on a phone, mouse wheel or the arrow buttons on a
+desktop, arrow keys everywhere.
 
 ## Local preview
 

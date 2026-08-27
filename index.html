@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Karla:wght@400;500;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<noscript><style>.loader,.progress{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}html{scroll-snap-type:none!important}</style></noscript>
+<noscript><style>.loader,.progress,.harrows{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.months span{opacity:.8!important}</style></noscript>
 <script>
 /* Failsafe: if GSAP never loads (flaky mobile data, blocked CDN) the loader
    must not trap the page on a blank screen. main.js clears this on success. */
@@ -78,43 +78,47 @@ window.__failsafe = setTimeout(function () {
     <div class="hint" aria-hidden="true"><i></i><span>scroll</span></div>
   </section>
 
-  <!-- ============ 2. THE DISTANCE — horizontal ============ -->
-  <section class="sec sec--gap" id="gap" data-nosnap>
-    <div class="hpin" id="hpin">
-      <p class="swipe" aria-hidden="true">keep scrolling &rarr;</p>
-      <div class="hbar" aria-hidden="true"><i id="hbarFill"></i></div>
-      <div class="htrack" id="htrack">
+  <!-- ============ 2. THE DISTANCE — sideways story ============ -->
+  <section class="sec sec--gap" id="gap">
+    <p class="swipe" id="swipeHint">swipe sideways &rarr;</p>
+    <div class="hbar" aria-hidden="true"><i id="hbarFill"></i></div>
 
-        <article class="hpanel">
-          <p class="num">01</p>
-          <h2 class="big">Somewhere between<br>your work <span class="pink">and mine</span>&hellip;</h2>
-          <p class="body">the days just started stacking up.</p>
-        </article>
+    <div class="hscroll" id="hscroll" aria-label="The distance, in four parts">
 
-        <article class="hpanel hpanel--months">
-          <div class="months" id="months">
-            <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span>
-            <span>MAY</span><span>JUN</span><span>JUL</span><span>AUG</span>
-            <span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
-          </div>
-          <p class="cap">months, quietly going by</p>
-        </article>
+      <article class="hpanel"><div class="hpanel__in">
+        <p class="num">01</p>
+        <h2 class="big">Somewhere between<br>your work <span class="pink">and mine</span>&hellip;</h2>
+        <p class="body">the days just started stacking up.</p>
+      </div></article>
 
-        <article class="hpanel">
-          <p class="num">02</p>
-          <h2 class="big">And neither of us<br><span class="pink">picked up the phone.</span></h2>
-        </article>
+      <article class="hpanel"><div class="hpanel__in">
+        <div class="months" id="months">
+          <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span>
+          <span>MAY</span><span>JUN</span><span>JUL</span><span>AUG</span>
+          <span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
+        </div>
+        <p class="cap">months, quietly going by</p>
+      </div></article>
 
-        <article class="hpanel">
-          <p class="num">03</p>
-          <div class="blame">
-            <div class="blame__side"><span class="who">you</span><span class="say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span></div>
-            <div class="blame__side"><span class="who">me</span><span class="say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span></div>
-          </div>
-          <p class="body">Both of us. Every single weekend.</p>
-        </article>
+      <article class="hpanel"><div class="hpanel__in">
+        <p class="num">02</p>
+        <h2 class="big">And neither of us<br><span class="pink">picked up the phone.</span></h2>
+      </div></article>
 
-      </div>
+      <article class="hpanel"><div class="hpanel__in">
+        <p class="num">03</p>
+        <div class="blame">
+          <div class="blame__side"><span class="who">you</span><span class="say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span></div>
+          <div class="blame__side"><span class="who">me</span><span class="say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span></div>
+        </div>
+        <p class="body">Both of us. Every single weekend.</p>
+      </div></article>
+
+    </div>
+
+    <div class="harrows">
+      <button class="harrow" id="hPrev" aria-label="Previous part">&larr;</button>
+      <button class="harrow" id="hNext" aria-label="Next part">&rarr;</button>
     </div>
   </section>
 
@@ -200,7 +204,7 @@ window.__failsafe = setTimeout(function () {
   </section>
 
   <!-- ============ 7. THE LETTER ============ -->
-  <section class="sec sec--letter" id="letterSec" data-nosnap hidden>
+  <section class="sec sec--letter" id="letterSec" hidden>
     <div class="paper" id="paper">
       <img class="paper__rakhi" src="assets/img/rakhi.webp" alt="" width="620" height="614">
       <div class="paper__inner">

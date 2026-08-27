@@ -31,9 +31,11 @@
 html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;background:var(--bg)}
 
-/* every beat fills the screen and the scroll lands on it —
-   no stopping halfway between two sections. */
-html{scroll-snap-type:y proximity;scroll-behavior:smooth}
+/* every beat fills the screen and the scroll MUST land on one —
+   a flick moves exactly one story beat, never stranding you between two. */
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+
+:focus-visible{outline:2px dashed var(--pink);outline-offset:3px}
 
 body{
   background:var(--bg);
@@ -79,8 +81,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   display:flex;align-items:center;
   padding:clamp(90px,12vh,140px) var(--pad) clamp(74px,10vh,120px);
   scroll-snap-align:start;
+  scroll-snap-stop:always;   /* one beat per gesture — no flying past */
 }
-.sec[data-nosnap]{scroll-snap-align:none}
 .wrap{width:100%;max-width:var(--maxw);margin:0 auto}
 .wrap--tight{max-width:660px}
 
@@ -155,21 +157,55 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hint i{display:block;width:38px;height:2px;background:var(--pink);transform-origin:left;border-radius:2px}
 
 /* =====================================================================
-   2. THE DISTANCE — pinned horizontal
+   2. THE DISTANCE — a native sideways carousel inside one full screen.
+   Swipe on a phone, wheel or arrows on a desktop. No pinning, so it
+   never fights the page's section snapping.
    ===================================================================== */
-.sec--gap{padding:0;display:block;background:var(--bg-2)}
-.hpin{position:relative;height:100svh;overflow:hidden;display:flex;align-items:center}
-.htrack{display:flex;align-items:center;will-change:transform}
-.hpanel{flex:0 0 auto;width:86vw;max-width:600px;padding:0 clamp(22px,6vw,60px)}
+.sec--gap{
+  padding:0;background:var(--bg-2);
+  height:100svh;
+  flex-direction:column;justify-content:center;align-items:stretch;
+  overflow:hidden;
+}
 .swipe{
-  position:absolute;left:var(--pad);top:clamp(66px,10vh,100px);margin:0;
+  position:absolute;left:var(--pad);top:clamp(66px,10vh,100px);margin:0;z-index:3;
   font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--pink);
+  transition:opacity .5s var(--e-out);
 }
+.swipe.is-gone{opacity:0}
+.hscroll{
+  display:flex;width:100%;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  overscroll-behavior-x:contain;   /* edge swipes never trigger browser back */
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.hscroll::-webkit-scrollbar{display:none}
+.hpanel{
+  flex:0 0 100%;width:100%;
+  scroll-snap-align:center;scroll-snap-stop:always;
+  display:flex;justify-content:center;
+}
+.hpanel__in{width:min(600px,100%);padding:0 var(--pad)}
 .hbar{
-  position:absolute;left:var(--pad);right:var(--pad);
-  bottom:clamp(36px,6vh,58px);height:2px;background:rgba(58,17,48,.1);border-radius:2px;
+  position:absolute;left:var(--pad);right:calc(var(--pad) + 116px);
+  bottom:clamp(44px,7vh,66px);height:2px;background:rgba(58,17,48,.1);border-radius:2px;
 }
-.hbar i{display:block;height:100%;width:0%;background:var(--pink);border-radius:2px}
+.hbar i{display:block;height:100%;width:0%;background:var(--pink);border-radius:2px;transition:width .3s var(--e-out)}
+.harrows{
+  position:absolute;right:var(--pad);bottom:clamp(30px,5vh,52px);
+  display:flex;gap:10px;z-index:5;
+}
+.harrow{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--card);border:1px solid rgba(194,37,92,.3);color:var(--pink);
+  font-size:17px;line-height:1;display:grid;place-items:center;
+  box-shadow:0 4px 14px rgba(58,17,48,.12);
+  transition:opacity .3s var(--e-out),transform .3s var(--e-out),background .3s var(--e-out),color .3s var(--e-out);
+}
+.harrow:hover:not(:disabled){background:var(--pink);color:#fff;transform:translateY(-2px)}
+.harrow:disabled{opacity:.3;cursor:default}
 
 .months{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2.4vw,14px)}
 .months span{
@@ -178,7 +214,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   padding:clamp(10px,2.8vw,16px) 4px;color:var(--ink-3);opacity:.4;
   background:var(--card);border-radius:10px;
   box-shadow:0 2px 10px rgba(58,17,48,.05);
+  transition:opacity .45s var(--e-out),color .45s var(--e-out),transform .45s var(--e-out);
 }
+.months span.lit{opacity:1;color:var(--pink);transform:translateY(-2px)}
 .cap{
   margin:clamp(18px,3vh,28px) 0 0;text-align:center;
   font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);
@@ -272,6 +310,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   width:clamp(42px,12vw,56px);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 32% 28%,var(--gold-2),var(--pink) 72%);
   box-shadow:0 6px 18px rgba(194,37,92,.36);
+  will-change:transform;
 }
 .me::after{
   content:"";position:absolute;inset:-7px;border-radius:50%;
@@ -354,16 +393,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   filter:drop-shadow(0 3px 6px rgba(58,17,48,.36));pointer-events:none;
 }
 .giveup{
-  position:absolute;left:50%;bottom:2px;transform:translateX(-50%);
-  font-size:12px;font-weight:500;color:var(--pink);
-  border-bottom:1.5px solid rgba(194,37,92,.4);padding-bottom:3px;
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  font-size:13px;font-weight:700;color:var(--pink);
+  padding:12px 18px;   /* real thumb target */
+}
+.giveup::after{
+  content:"";position:absolute;left:18px;right:18px;bottom:9px;height:1.5px;
+  background:rgba(194,37,92,.45);
 }
 
 /* =====================================================================
    7. THE LETTER
    ===================================================================== */
 .sec--letter{
-  background:var(--bg-2);min-height:auto;justify-content:center;
+  background:var(--bg-2);justify-content:center;
   padding:clamp(64px,10vh,120px) var(--pad) clamp(84px,12vh,140px);
 }
 .paper{
@@ -409,7 +452,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (min-width:760px){
   .blame{grid-template-columns:1fr 1fr;gap:28px}
   .months{grid-template-columns:repeat(4,1fr)}
-  .hpanel{width:64vw}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -424,10 +466,8 @@ html.no-motion{scroll-snap-type:none}
 html.no-motion .reveal-up{opacity:1;transform:none}
 html.no-motion .loader{display:none}
 html.no-motion .line .w{transform:none !important}
-html.no-motion .hpin{height:auto;display:block;overflow:visible}
-html.no-motion .htrack{flex-direction:column;transform:none !important}
-html.no-motion .hpanel{width:100%;max-width:none;padding:clamp(46px,9vh,84px) 0}
 html.no-motion .months span{opacity:.8}
+/* the carousel is native scroll — it keeps working without GSAP */
 html.no-motion .mega span{transform:none !important;opacity:1 !important}
 html.no-motion .glow{opacity:1;transform:translate(-50%,-50%) scale(1)}
 html.no-motion .env__flap{transform:rotateX(-168deg)}
