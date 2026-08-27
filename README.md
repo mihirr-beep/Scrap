@@ -48,5 +48,9 @@ Photo sources: Pexels (free to use, no attribution required).
 ## The finale
 
 The letter promises a box at the last. The box rattles. Opening it releases a
-chhipkali (hand-drawn SVG) that darts and freezes her way around the whole
-screen forever — tap her and she bolts. Sibling gift-giving at its finest.
+chhipkali — a real one, cut out of a night-wall photograph — that darts and
+freezes her way around the whole screen forever. Tap her and she bolts.
+Sibling gift-giving at its finest.
+
+The distance chapter auto-plays panel by panel while it is on screen; the
+first sideways swipe (or wheel tick, or arrow) hands control to the reader.

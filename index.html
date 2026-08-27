@@ -80,7 +80,7 @@ window.__failsafe = setTimeout(function () {
 
   <!-- ============ 2. THE DISTANCE — sideways story ============ -->
   <section class="sec sec--gap" id="gap">
-    <p class="swipe" id="swipeHint">swipe sideways &rarr;</p>
+    <p class="swipe" id="swipeHint">plays itself &middot; swipe to take over</p>
     <div class="hbar" aria-hidden="true"><i id="hbarFill"></i></div>
 
     <div class="hscroll" id="hscroll" aria-label="The distance, in four parts">
@@ -262,21 +262,9 @@ window.__failsafe = setTimeout(function () {
 
 </main>
 
-<!-- the gift itself. She lives on this site now. -->
+<!-- the gift itself: a real chhipkali, cut from a photo. She lives here now. -->
 <div class="lizard" id="lizard" hidden>
-  <svg viewBox="0 0 100 160" aria-hidden="true">
-    <g id="lizBody">
-      <path class="liz-leg" d="M40,44 L22,33 L15,40"/>
-      <path class="liz-leg" d="M60,44 L78,33 L85,40"/>
-      <path class="liz-leg" d="M40,72 L21,80 L15,93"/>
-      <path class="liz-leg" d="M60,72 L79,80 L85,93"/>
-      <path class="liz-tail" d="M50,82 C55,104 41,116 52,130 C58,139 49,147 55,155"/>
-      <ellipse class="liz-fill" cx="50" cy="58" rx="16" ry="27"/>
-      <ellipse class="liz-fill" cx="50" cy="22" rx="13" ry="15"/>
-      <circle cx="43" cy="15" r="3.4" fill="#fff"/><circle cx="57" cy="15" r="3.4" fill="#fff"/>
-      <circle cx="43" cy="14.4" r="1.7" fill="#2c3324"/><circle cx="57" cy="14.4" r="1.7" fill="#2c3324"/>
-    </g>
-  </svg>
+  <img id="lizImg" src="assets/img/lizard.webp" width="210" height="685" alt="">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>

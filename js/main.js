@@ -170,8 +170,45 @@ function horizontalGap() {
   update();
 
   const go = dir => sc.scrollBy({ left: dir * sc.clientWidth, behavior: "smooth" });
-  prev.addEventListener("click", () => go(-1));
-  next.addEventListener("click", () => go(1));
+  prev.addEventListener("click", () => { takeOver(); go(-1); });
+  next.addEventListener("click", () => { takeOver(); go(1); });
+
+  /* --- auto-play: the story advances by itself while this beat is on
+         screen; the first human touch takes over for good --- */
+  let timer = null, userTook = false;
+
+  function autoStep() {
+    if (sc.scrollLeft >= maxScroll() - 2) { stopAuto(); return; }   // story told
+    go(1);
+  }
+  function startAuto() {
+    if (userTook || REDUCED || timer) return;
+    timer = setInterval(autoStep, 2800);
+    sc.dataset.auto = "on";
+  }
+  function stopAuto() {
+    clearInterval(timer);
+    timer = null;
+    sc.dataset.auto = "off";
+  }
+  function takeOver() { userTook = true; stopAuto(); }
+
+  // take over only on real horizontal intent — a thumb resting here while
+  // scrolling the page vertically must NOT kill the auto-play
+  let tx = 0, ty = 0;
+  sc.addEventListener("touchstart", e => {
+    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+  }, { passive: true });
+  sc.addEventListener("touchmove", e => {
+    const dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) takeOver();
+  }, { passive: true });
+
+  // run only while the section is actually in view
+  ScrollTrigger.create({
+    trigger: "#gap", start: "top 55%", end: "bottom 45%",
+    onToggle: self => self.isActive ? startAuto() : stopAuto()
+  });
 
   // desktop wheel: one tick = one panel, released at the edges so the
   // page's own section snap takes over
@@ -181,13 +218,14 @@ function horizontalGap() {
     const atEdge = fwd ? sc.scrollLeft >= maxScroll() - 2 : sc.scrollLeft <= 2;
     if (atEdge || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
     e.preventDefault();
+    takeOver();
     if (lock) return;
     lock = true;
     setTimeout(() => { lock = false; }, 480);
     go(fwd ? 1 : -1);
   }, { passive: false });
 
-  return go;   // keyboard navigation reuses this
+  return dir => { takeOver(); go(dir); };   // keyboard navigation reuses this
 }
 
 /* ---------------------------------------------------------------------
@@ -467,18 +505,18 @@ function gift() {
     gsap.timeline({ onComplete: () => gsap.delayedCall(gsap.utils.random(.5, 2.4), wander) })
       .to(liz, { rotation: heading + "_short", duration: .16, ease: "power2.out" })
       .to(liz, { x, y, duration: Math.max(.35, dist / 460), ease: "power1.inOut" }, "<")
-      .to("#lizBody", {                                        // scuttle while moving
-        rotation: 4, transformOrigin: "50% 42%", duration: .07,
+      .to("#lizImg", {                                         // scuttle while moving
+        rotation: 4, transformOrigin: "50% 45%", duration: .07,
         repeat: Math.min(16, Math.max(4, Math.floor(dist / 26))), yoyo: true, ease: "none"
       }, "<")
-      .set("#lizBody", { rotation: 0 });
+      .set("#lizImg", { rotation: 0 });
   }
 
   // tapping her makes her bolt — she is not a fan of you either
   liz.addEventListener("pointerdown", () => {
     if (REDUCED) return;
     gsap.killTweensOf(liz);
-    gsap.killTweensOf("#lizBody");
+    gsap.killTweensOf("#lizImg");
     wander();
   });
 
