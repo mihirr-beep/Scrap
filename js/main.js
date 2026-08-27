@@ -663,6 +663,20 @@ function gift() {
 }
 
 /* ---------------------------------------------------------------------
+   the p.s. cards — tap to flip, tap to close
+   ------------------------------------------------------------------- */
+function secrets() {
+  $$(".secret").forEach(card => {
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-open");
+      if (!REDUCED && card.classList.contains("is-open")) {
+        gsap.fromTo(card, { scale: .96 }, { scale: 1, duration: .6, ease: "back.out(2.5)" });
+      }
+    });
+  });
+}
+
+/* ---------------------------------------------------------------------
    progress + replay
    ------------------------------------------------------------------- */
 function chrome() {
@@ -685,6 +699,7 @@ chips();
 celebrate();
 envelope();
 gift();
+secrets();
 chrome();
 runLoader();
 
