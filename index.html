@@ -4,24 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f2ece6">
-<title>For You</title>
-<meta name="description" content="A small something, made by hand.">
+<title>Happy Rakhi</title>
+<meta name="description" content="A rakhi that had to travel a long way.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<noscript><style>.loader,.progress{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}</style></noscript>
+<noscript><style>.loader,.progress,.thread{display:none!important}.reveal-up{opacity:1!important;transform:none!important}.hpin{height:auto!important;display:block!important;overflow:visible!important}.htrack{flex-direction:column!important}.hpanel{width:100%!important}</style></noscript>
 <script>
 /* Failsafe: if GSAP never loads (flaky mobile data, blocked CDN) the loader
    must not trap the page on a blank screen. main.js clears this on success. */
 window.__failsafe = setTimeout(function () {
-  document.documentElement.classList.add("no-motion");
-  var l = document.getElementById("loader"); if (l) l.remove();
+  var loader = document.getElementById("loader");
+  if (window.gsap && !loader) return;            // intro ran fine, nothing to do
+
+  // Never leave the page trapped behind a locked loader.
+  if (loader) loader.remove();
   document.body.classList.remove("is-locked");
-  ["letterSec", "outro"].forEach(function (id) {
-    var e = document.getElementById(id); if (e) e.hidden = false;
-  });
-}, 6000);
+
+  // Only give the letter away if GSAP is truly gone — otherwise the envelope
+  // still works and the surprise should survive.
+  if (!window.gsap) {
+    document.documentElement.classList.add("no-motion");
+    ["letterSec", "outro"].forEach(function (id) {
+      var e = document.getElementById(id); if (e) e.hidden = false;
+    });
+  }
+}, 8000);
 </script>
 </head>
 <body>
@@ -29,7 +38,7 @@ window.__failsafe = setTimeout(function () {
 <!-- ============ PRELOADER ============ -->
 <div class="loader" id="loader">
   <div class="loader__inner">
-    <span class="loader__label">a small something</span>
+    <span class="loader__label">tying a thread</span>
     <span class="loader__count" id="loaderCount">0</span>
   </div>
   <div class="loader__bar"><i id="loaderBar"></i></div>
@@ -38,15 +47,28 @@ window.__failsafe = setTimeout(function () {
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 
+<!-- the rakhi thread that follows you down the whole page -->
+<svg class="thread" id="thread" viewBox="0 0 60 1000" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#d8b45e"/>
+      <stop offset="45%"  stop-color="#c0392b"/>
+      <stop offset="100%" stop-color="#d8b45e"/>
+    </linearGradient>
+  </defs>
+  <path id="threadPath" fill="none" stroke="url(#tg)" stroke-width="2.4" stroke-linecap="round"
+    d="M30,0 C6,90 54,150 30,240 C6,330 54,390 30,480 C6,570 54,630 30,720 C6,810 54,870 30,1000"/>
+</svg>
+
 <main id="main">
 
   <!-- ============ 1. GREETING ============ -->
   <section class="sec sec--hero" id="hero">
     <div class="wrap">
-      <p class="eyebrow reveal-up">made by hand &middot; not by a template</p>
+      <p class="eyebrow reveal-up">raksha bandhan &middot; made by hand, not by a template</p>
       <h1 class="hero__title">
         <span class="line"><span class="w">Hello,</span></span>
-        <span class="line"><span class="w em" data-fill="name">Friend</span><span class="w">.</span></span>
+        <span class="line"><span class="w em" data-fill="name">Didi</span><span class="w">.</span></span>
       </h1>
       <p class="hero__sub reveal-up">
         Long time, no see.<br>
@@ -59,14 +81,14 @@ window.__failsafe = setTimeout(function () {
     </div>
   </section>
 
-  <!-- ============ 2. THE GAP &mdash; horizontal scroll ============ -->
+  <!-- ============ 2. THE GAP — horizontal scroll ============ -->
   <section class="sec sec--gap" id="gap">
     <div class="hpin" id="hpin">
       <div class="htrack" id="htrack">
 
         <article class="hpanel hpanel--intro">
           <p class="kicker">chapter one</p>
-          <h2 class="h2">Somewhere along<br>the way&hellip;</h2>
+          <h2 class="h2">Somewhere between<br>your work and mine&hellip;</h2>
           <p class="p">the days just started<br>stacking up.</p>
         </article>
 
@@ -90,14 +112,14 @@ window.__failsafe = setTimeout(function () {
           <div class="blame">
             <div class="blame__side">
               <span class="blame__who">you</span>
-              <span class="blame__say">&ldquo;I&rsquo;ll message tomorrow.&rdquo;</span>
+              <span class="blame__say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span>
             </div>
             <div class="blame__side">
               <span class="blame__who">me</span>
-              <span class="blame__say">&ldquo;I&rsquo;ll message tomorrow.&rdquo;</span>
+              <span class="blame__say">&ldquo;I&rsquo;ll call this weekend.&rdquo;</span>
             </div>
           </div>
-          <p class="p p--center">Both of us. Every single tomorrow.</p>
+          <p class="p p--center">Both of us. Every single weekend.</p>
         </article>
 
       </div>
@@ -112,9 +134,9 @@ window.__failsafe = setTimeout(function () {
       <p class="p reveal-up">Go on. Tap one. I&rsquo;m actually asking.</p>
       <div class="chips" id="chips">
         <button class="chip" data-reply="Liar. But I&rsquo;m glad.">good, honestly</button>
-        <button class="chip" data-reply="Yeah. That tracks. Me too.">busy. so busy</button>
-        <button class="chip" data-reply="Then this page arrived at the right time.">a bit tired</button>
-        <button class="chip" data-reply="I know. That&rsquo;s kind of why I built this.">missed you, idiot</button>
+        <button class="chip" data-reply="Yeah. That tracks. Same here.">work is eating me alive</button>
+        <button class="chip" data-reply="&hellip;that&rsquo;s my line. Don&rsquo;t turn it around on me.">are you eating properly?</button>
+        <button class="chip" data-reply="I know. Same. Obviously.">missed you, idiot</button>
       </div>
       <p class="chip-reply" id="chipReply" aria-live="polite"></p>
     </div>
@@ -125,29 +147,31 @@ window.__failsafe = setTimeout(function () {
     <div class="wrap">
       <h2 class="h2 h2--reveal">
         <span class="line"><span class="w">But then</span></span>
-        <span class="line"><span class="w">I heard</span></span>
-        <span class="line"><span class="w em">the news.</span></span>
+        <span class="line"><span class="w">I looked</span></span>
+        <span class="line"><span class="w em">at the date.</span></span>
       </h2>
       <p class="p p--wide reveal-up">
-        And I didn&rsquo;t message. I didn&rsquo;t call.<br>
-        I went and built you a whole website instead,<br>
-        because apparently that&rsquo;s easier for me.
+        It&rsquo;s Rakhi. And I&rsquo;m not there &mdash; again.<br>
+        You&rsquo;re too far away to tie anything on my wrist,<br>
+        so I&rsquo;m sending my half of it instead.
       </p>
     </div>
   </section>
 
-  <!-- ============ 5. CONGRATULATIONS ============ -->
+  <!-- ============ 5. HAPPY RAKHI ============ -->
   <section class="sec sec--congrats" id="congrats">
     <div class="burst" aria-hidden="true"></div>
     <div class="wrap">
-      <p class="kicker light reveal-up">and so, with feeling &mdash;</p>
-      <h2 class="mega" id="mega" aria-label="Congratulations">
-        <span>C</span><span>o</span><span>n</span><span>g</span><span>r</span><span>a</span><span>t</span><span>u</span><span>l</span><span>a</span><span>t</span><span>i</span><span>o</span><span>n</span><span>s</span>
+      <p class="kicker light reveal-up">so, from much too far away &mdash;</p>
+      <h2 class="mega" id="mega" aria-label="Happy Rakhi">
+        <span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
+        <span class="mega__sp"></span>
+        <span>R</span><span>a</span><span>k</span><span>h</span><span>i</span>
       </h2>
-      <!-- EDIT ME: what you are congratulating them for -->
-      <p class="congrats__for reveal-up" data-fill="occasion">on the thing you worked so hard for</p>
+      <!-- EDIT ME: your line for her -->
+      <p class="congrats__for reveal-up" data-fill="occasion">to the one who has had my back since before either of us had a choice</p>
       <p class="p p--light reveal-up">
-        I always knew. That&rsquo;s not flattery &mdash; ask anyone.
+        Whatever you&rsquo;re building out there &mdash; I&rsquo;m on your side of it.
       </p>
     </div>
     <div class="marquee" aria-hidden="true"><div class="marquee__row" id="marqueeRow"></div></div>
@@ -167,12 +191,19 @@ window.__failsafe = setTimeout(function () {
       <button class="env" id="env" aria-label="Open the letter">
         <span class="env__shadow"></span>
         <span class="env__body">
+          <img class="env__rakhi" id="envRakhi" src="assets/img/rakhi-tight.webp" alt="" width="312" height="296">
           <span class="env__letter" id="envLetter"></span>
           <span class="env__front"></span>
           <span class="env__flap" id="envFlap"></span>
-          <img class="env__seal" id="envSeal" src="assets/img/seal.png" alt="" width="340" height="340">
+          <img class="env__seal" id="envSeal" src="assets/img/seal.webp" alt="" width="300" height="300">
         </span>
       </button>
+
+      <!-- the sender, whispering. Swap person.webp for a real cutout photo. -->
+      <div class="figure" id="figure" aria-hidden="true">
+        <span class="figure__glow"></span>
+        <img class="figure__img" id="figureImg" src="assets/img/person.webp" alt="" width="620" height="820">
+      </div>
 
       <button class="giveup" id="giveup" hidden>just open it already &rarr;</button>
     </div>
@@ -181,19 +212,20 @@ window.__failsafe = setTimeout(function () {
   <!-- ============ 7. THE LETTER ============ -->
   <section class="sec sec--letter" id="letterSec" hidden>
     <div class="paper" id="paper">
+      <img class="paper__rakhi" src="assets/img/rakhi.webp" alt="" width="620" height="614">
       <div class="paper__inner">
         <p class="paper__date" data-fill="date">&mdash;</p>
 
-        <!-- ===== EDIT ME &mdash; WRITE THIS YOURSELF. Keep it messy and real. ===== -->
+        <!-- ===== EDIT ME — WRITE THIS YOURSELF. Keep it messy and real. ===== -->
         <div class="paper__body" id="paperBody">
-          <p>Dear <span data-fill="name">Friend</span>,</p>
+          <p>Dear <span data-fill="name">Didi</span>,</p>
           <p>[ This is your part. Don&rsquo;t let me write it &mdash; write it badly, in your own words, at 1am. That&rsquo;s the whole point of it being handwritten. ]</p>
           <p>[ Say the thing you&rsquo;d say if you finally picked up the phone. ]</p>
         </div>
         <!-- ===== END EDIT ===== -->
 
         <p class="paper__sign">
-          <span class="paper__signfrom">always in your corner,</span>
+          <span class="paper__signfrom">your brother, always</span>
           <span class="paper__signname" data-fill="from">Me</span>
         </p>
       </div>
@@ -204,7 +236,10 @@ window.__failsafe = setTimeout(function () {
   <footer class="sec sec--outro" id="outro" hidden>
     <div class="wrap">
       <h2 class="h2 h2--out reveal-up">Now actually<br>call me back.</h2>
-      <p class="p reveal-up">I&rsquo;m serious. The phone works both ways.</p>
+      <p class="p reveal-up">
+        I&rsquo;m serious. The phone works both ways.<br>
+        And keep the thread &mdash; I&rsquo;ll come collect it in person.
+      </p>
       <button class="replay" id="replay">read it again</button>
     </div>
   </footer>
