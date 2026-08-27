@@ -557,6 +557,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   color:var(--pink);
 }
 
+.psnote{
+  margin:clamp(34px,6vh,54px) 0 0;
+  font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(58,17,48,.34);
+}
+
 .reveal-up{opacity:0;transform:translateY(22px)}
 
 @media (min-width:760px){

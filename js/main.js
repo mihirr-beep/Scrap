@@ -17,8 +17,8 @@ const CONFIG = {
   quiz: [
     {
       q: "What WE used to do on Raksha Bandhan?",
-      a: ["Tie the rakhi, obviously", "I don't know", "Some grand family ritual"],
-      correct: 1,
+      a: ["I don't know", "Some grand family ritual"],
+      correct: 0,
       right: "Exactly. Nobody remembers. That's our tradition.",
       wrong: "Don't lie. Neither of us knows."
     },
